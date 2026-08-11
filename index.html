@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel do elevador · Hotel Campo Palace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS — ouro Campo Palace sobre painéis de papel creme
+   ============================================================ */
+:root{
+  --ouro:#A77208;          /* fundo da cabine */
+  --ouro-fundo-2:#8E5F06;  /* base do degradê */
+  --papel:#FAF6EE;         /* painéis */
+  --passepartout:#F1E8D6;  /* moldura atrás do cartaz */
+  --tinta:#2E2413;         /* texto principal sobre creme */
+  --tinta-fraca:#7C6740;   /* apoio, legendas */
+  --latao:#A77208;         /* acento sobre creme */
+  --latao-claro:#C79E4D;   /* acento sobre ouro */
+  --linha:rgba(167,114,8,.22);
+  --branco:rgba(255,255,255,.92);
+  --alta:#2F7D51;
+  --baixa:#B8452A;
+
+  --serif:"Bodoni Moda", Georgia, "Times New Roman", serif;
+  --sans:"Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --u: 1vmin;
+  --gap: calc(var(--u) * 2.2);
+  --raio: calc(var(--u) * 1.4);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+  background:var(--ouro);
+  color:var(--tinta);
+  font-family:var(--sans);
+  font-variant-numeric:tabular-nums;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(120% 75% at 50% -18%, rgba(255,236,190,.30), transparent 60%),
+    linear-gradient(180deg, var(--ouro) 0%, var(--ouro-fundo-2) 100%);
+}
+
+/* altura própria: funciona solto na TV e dentro de um iframe */
+.cabine{
+  position:relative;z-index:1;
+  height:100vh;height:100dvh;
+  display:grid;grid-template-rows:auto 1fr auto;
+  gap:var(--gap);
+  padding:calc(var(--u) * 3);
+  overflow:hidden;
+}
+
+/* ---------- Cabeçalho ---------- */
+.topo{
+  display:flex;align-items:baseline;justify-content:space-between;gap:var(--gap);
+  border-bottom:1px solid rgba(255,255,255,.28);
+  padding-bottom:calc(var(--u) * 1.6);
+}
+.marca{display:flex;align-items:baseline;gap:calc(var(--u) * 1.6)}
+.marca .selo{
+  width:calc(var(--u) * 1.1);height:calc(var(--u) * 3.4);
+  background:var(--branco);border-radius:2px;flex:none;align-self:center;
+}
+.marca h1{
+  font-family:var(--serif);font-weight:400;
+  font-size:calc(var(--u) * 4.2);letter-spacing:.005em;line-height:1;
+  color:var(--branco);
+}
+.marca .lugar{
+  font-size:calc(var(--u) * 1.5);font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.72);
+}
+.data{
+  font-size:calc(var(--u) * 2);font-weight:500;
+  color:var(--branco);letter-spacing:.04em;text-align:right;
+}
+
+/* ---------- Corpo ---------- */
+.corpo{
+  display:grid;grid-template-columns:1.35fr 1fr;
+  gap:var(--gap);min-height:0;
+}
+.coluna{display:grid;gap:var(--gap);min-height:0}
+.esquerda{grid-template-rows:1.15fr 1fr}
+.direita{grid-template-rows:1fr auto}
+
+.bloco{
+  background:var(--papel);
+  border-radius:var(--raio);
+  box-shadow:0 calc(var(--u)*.4) calc(var(--u)*1.6) rgba(60,38,0,.20);
+  padding:calc(var(--u) * 2.6) calc(var(--u) * 3);
+  min-height:0;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.rotulo{
+  font-size:calc(var(--u) * 1.45);font-weight:700;
+  letter-spacing:.24em;text-transform:uppercase;
+  color:var(--latao);
+  margin-bottom:calc(var(--u) * 1.6);
+}
+
+/* ---------- Relógio ---------- */
+.relogio{align-items:flex-start;justify-content:center}
+.hora{display:flex;align-items:baseline;gap:calc(var(--u) * 1.2);line-height:.82}
+.hora .hm{
+  font-size:calc(var(--u) * 17);font-weight:600;
+  letter-spacing:-.035em;font-variant-numeric:tabular-nums;
+  color:var(--tinta);
+}
+.hora .seg{font-size:calc(var(--u) * 4);font-weight:600;color:var(--latao);letter-spacing:.02em}
+.saudacao{
+  margin-top:calc(var(--u) * 1.8);
+  font-family:var(--serif);font-style:italic;
+  font-size:calc(var(--u) * 2.9);color:var(--tinta-fraca);
+}
+
+/* ---------- Clima ---------- */
+.clima-agora{display:flex;align-items:center;gap:calc(var(--u) * 2.6)}
+.clima-agora svg{width:calc(var(--u) * 9);height:calc(var(--u) * 9);flex:none}
+.temp{font-size:calc(var(--u) * 8.4);font-weight:600;letter-spacing:-.03em;line-height:.9;color:var(--tinta)}
+.temp sup{font-size:.42em;font-weight:500;vertical-align:super;margin-left:.06em}
+.clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * .5);min-width:0}
+.clima-desc{font-size:calc(var(--u) * 2.5);font-weight:600;line-height:1.15}
+.clima-max{font-size:calc(var(--u) * 1.8);color:var(--tinta-fraca)}
+.clima-extra{
+  display:flex;gap:calc(var(--u) * 4);
+  margin-top:auto;padding-top:calc(var(--u) * 2);
+  border-top:1px solid var(--linha);
+}
+.extra-item{display:flex;flex-direction:column;gap:calc(var(--u) * .4)}
+.extra-item b{font-size:calc(var(--u) * 2.4);font-weight:700;color:var(--tinta)}
+.extra-item span{
+  font-size:calc(var(--u) * 1.35);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--tinta-fraca);
+}
+
+/* ---------- Evento em rodízio ---------- */
+.rodizio{justify-content:flex-start;padding-top:calc(var(--u) * 2.6)}
+.regua{
+  position:absolute;top:0;left:0;right:0;height:calc(var(--u) * .5);
+  display:flex;gap:2px;
+}
+.regua i{flex:1;background:var(--linha);border-radius:1px;transition:background .35s}
+.regua i.on{background:var(--latao)}
+
+.evento{display:flex;flex-direction:column;height:100%;min-height:0;gap:calc(var(--u) * 1.6)}
+.cartaz{
+  flex:1 1 auto;min-height:calc(var(--u) * 14);
+  background:var(--passepartout);
+  border-radius:calc(var(--raio) * .7);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.cartaz img{width:100%;height:100%;object-fit:contain;display:block}
+.cartaz.vazio{display:none}
+
+.evt-texto{flex:0 0 auto;display:flex;flex-direction:column;gap:calc(var(--u) * .8)}
+.evt-texto .quando{
+  font-size:calc(var(--u) * 1.8);font-weight:700;
+  color:var(--latao);letter-spacing:.08em;text-transform:uppercase;
+}
+.evt-texto h2{
+  font-family:var(--serif);font-weight:600;
+  font-size:calc(var(--u) * 3.6);line-height:1.05;color:var(--tinta);
+}
+.evt-texto .onde{font-size:calc(var(--u) * 1.9);color:var(--tinta-fraca);line-height:1.3}
+
+.animar{animation:entra .55s cubic-bezier(.22,.7,.3,1) both}
+@keyframes entra{from{opacity:0;transform:translateY(calc(var(--u) * 1.4))}to{opacity:1;transform:none}}
+
+/* ---------- Câmbio ---------- */
+.cambio{gap:calc(var(--u) * 1.2);padding-top:calc(var(--u) * 2.2);padding-bottom:calc(var(--u) * 2.2)}
+.moeda{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:calc(var(--u) * 1.4)}
+.moeda .sigla{
+  font-size:calc(var(--u) * 1.5);font-weight:700;
+  letter-spacing:.16em;color:var(--tinta-fraca);width:calc(var(--u) * 5);
+}
+.moeda .valor{font-size:calc(var(--u) * 3.2);font-weight:700;letter-spacing:-.01em;color:var(--tinta)}
+.moeda .valor small{font-size:.5em;font-weight:500;color:var(--tinta-fraca);margin-right:.2em}
+.moeda .var{font-size:calc(var(--u) * 1.7);font-weight:700}
+.sobe{color:var(--alta)}
+.desce{color:var(--baixa)}
+
+/* ---------- Rodapé ---------- */
+.rodape{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--gap);
+  border-top:1px solid rgba(255,255,255,.28);
+  padding-top:calc(var(--u) * 1.6);
+}
+.recado{
+  font-family:var(--serif);font-style:italic;
+  font-size:calc(var(--u) * 2.2);color:var(--branco);
+}
+.estado{
+  display:flex;align-items:center;gap:calc(var(--u) * 1);
+  letter-spacing:.12em;text-transform:uppercase;
+  font-size:calc(var(--u) * 1.3);color:rgba(255,255,255,.72);white-space:nowrap;
+}
+.ponto{width:calc(var(--u) * .9);height:calc(var(--u) * .9);border-radius:50%;background:#8CE0AE}
+.ponto.parado{background:rgba(255,255,255,.55)}
+.ponto.demo{background:var(--latao-claro)}
+.ponto.off{background:#F0A48C}
+
+/* ---------- Retrato ---------- */
+@media (max-aspect-ratio: 1/1){
+  :root{--u:1.15vmin}
+  .corpo{grid-template-columns:1fr;grid-template-rows:auto 1fr auto auto}
+  .coluna{display:contents}
+  .esquerda .relogio{order:1}
+  .rodizio{order:2;min-height:calc(var(--u) * 46)}
+  .esquerda .bloco:nth-child(2){order:3}
+  .cambio{order:4}
+  .hora .hm{font-size:calc(var(--u) * 13)}
+  .marca h1{font-size:calc(var(--u) * 3.6)}
+  .evt-texto h2{font-size:calc(var(--u) * 4)}
+  .cartaz{min-height:calc(var(--u) * 26)}
+}
+@media (prefers-reduced-motion: reduce){
+  .animar{animation:none}
+  .regua i{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="cabine">
+
+  <header class="topo">
+    <div class="marca">
+      <div class="selo"></div>
+      <h1 id="hotelNome">Hotel Campo Palace</h1>
+      <div class="lugar" id="hotelLugar">Campo Mourão · PR</div>
+    </div>
+    <div class="data" id="dataHoje">—</div>
+  </header>
+
+  <main class="corpo">
+
+    <div class="coluna esquerda">
+
+      <section class="bloco relogio">
+        <div class="hora">
+          <span class="hm" id="horaMin">--:--</span>
+          <span class="seg" id="segundos">--</span>
+        </div>
+        <div class="saudacao" id="saudacao">Seja bem-vindo</div>
+      </section>
+
+      <section class="bloco">
+        <div class="rotulo" id="rotuloClima">Agora em Campo Mourão</div>
+        <div class="clima-agora">
+          <div id="climaIcone"></div>
+          <div class="temp" id="climaTemp">--<sup>°</sup></div>
+          <div class="clima-txt">
+            <div class="clima-desc" id="climaDesc">Carregando</div>
+            <div class="clima-max" id="climaMax">—</div>
+          </div>
+        </div>
+        <div class="clima-extra">
+          <div class="extra-item"><b id="climaSensacao">--°</b><span>Sensação</span></div>
+          <div class="extra-item"><b id="climaUmidade">--%</b><span>Umidade</span></div>
+          <div class="extra-item"><b id="climaVento">-- km/h</b><span>Vento</span></div>
+          <div class="extra-item"><b id="climaChuva">--%</b><span>Chuva hoje</span></div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="coluna direita">
+
+      <section class="bloco rodizio">
+        <div class="regua" id="regua"></div>
+        <div class="rotulo">Acontece na cidade</div>
+        <div class="evento" id="evento">
+          <div class="cartaz" id="cartaz"><img id="evtImagem" alt=""></div>
+          <div class="evt-texto">
+            <div class="quando" id="evtQuando">—</div>
+            <h2 id="evtTitulo">Carregando a agenda</h2>
+            <div class="onde" id="evtOnde">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloco cambio">
+        <div class="rotulo">Câmbio do dia</div>
+        <div id="listaMoedas"></div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer class="rodape">
+    <div class="recado" id="recado">Café da manhã das 6h30 às 10h, no térreo.</div>
+    <!-- "Script parado" é o estado inicial. Se ficar assim, o JavaScript não rodou. -->
+    <div class="estado"><span class="ponto parado" id="ponto"></span><span id="estadoTxt">Script parado</span></div>
+  </footer>
+
+</div>
+
+<!--
+  Os atributos abaixo pedem para os otimizadores NÃO adiarem nem mexerem neste script.
+  Cobrem Perfmatters, WP Rocket, Autoptimize, LiteSpeed, SG Optimizer e Cloudflare Rocket Loader.
+  Sem eles, o painel congela numa TV, porque o script só rodaria após alguém tocar na tela.
+-->
+<script
+  data-cfasync="false"
+  data-no-optimize="1"
+  data-no-defer="1"
+  data-noptimize="1"
+  data-nowprocket
+  data-wpfc-render="false"
+  data-pagespeed-no-defer
+  nitro-exclude>
+/* painel-elevador — não adiar (perfmatters exclusion: painel-elevador) */
+(function(){
+"use strict";
+
+/* ================================================================
+   1. CONFIGURAÇÃO — é só aqui que o hotel mexe
+   ================================================================ */
+const CONFIG = {
+  hotel: "Hotel Campo Palace",
+  cidade: "Campo Mourão",
+  uf: "PR",
+  lat: -24.0463,
+  lon: -52.3783,
+  fuso: "America/Sao_Paulo",
+
+  moedas: ["USD-BRL", "EUR-BRL", "ARS-BRL"],
+
+  // Cartaz usado quando o evento não tiver imagem própria
+  imagemPadrao: "https://hotelcampopalace.com.br/wp-content/uploads/2026/06/banner-site.jpg.jpeg",
+
+  recados: [
+    "Café da manhã das 6h30 às 10h, no térreo.",
+    "Wi-Fi: rede CAMPOPALACE-HOSPEDES · senha na chave do quarto.",
+    "Recepção 24 horas — ramal 9.",
+    "Check-out até as 12h. Precisa de mais tempo? Fale conosco."
+  ],
+
+  agendaURL: null,      // ex.: "https://hotelcampopalace.com.br/agenda.json"
+
+  segundosPorSlide: 10,
+  atualizarClima: 10 * 60 * 1000,
+  atualizarCambio: 5 * 60 * 1000,
+  atualizarAgenda: 60 * 60 * 1000,
+  tentarDeNovo: 60 * 1000,   // quando cai em demonstração, tenta de novo em 1 min
+  esperaRede: 8000           // desiste de uma chamada travada em 8s
+};
+
+/* Agenda de reserva — cada item aceita "imagem"; sem ela, entra a padrão */
+const AGENDA_RESERVA = [
+  { titulo:"Feira do Produtor",                 inicio:"2026-08-12T07:00", fim:"2026-08-12T12:00", local:"Praça São José · Centro" },
+  { titulo:"Cinema na Praça",                   inicio:"2026-08-14T19:30", local:"Lago Azul · entrada gratuita" },
+  { titulo:"Orquestra Sinfônica da UNESPAR",    inicio:"2026-08-15T20:00", local:"Teatro Municipal · ingressos na bilheteria" },
+  { titulo:"Exposição Agrícola",                inicio:"2026-08-18T09:00", fim:"2026-08-22T22:00", local:"Parque de Exposições" },
+  { titulo:"Feirinha noturna de artesanato",    inicio:"2026-08-16T18:00", local:"Calçadão da Rua Brasil" }
+];
+
+/* ================================================================
+   2. ESTADO
+   ================================================================ */
+const estado = { agenda: [], slide: 0, demo: false, falhas: 0, retomada: null };
+const $ = id => document.getElementById(id);
+
+/* busca com prazo: um firewall que engole a conexão não trava mais a tela */
+async function buscar(url, opcoes){
+  const corte = new AbortController();
+  const relogio = setTimeout(() => corte.abort(), CONFIG.esperaRede);
+  try{
+    return await fetch(url, Object.assign({ signal: corte.signal }, opcoes || {}));
+  } finally {
+    clearTimeout(relogio);
+  }
+}
+
+/* ================================================================
+   3. RELÓGIO E DATA
+   ================================================================ */
+const fmt = (opts) => new Intl.DateTimeFormat("pt-BR", { timeZone: CONFIG.fuso, ...opts });
+
+function tique(){
+  const agora = new Date();
+  const p = Object.fromEntries(
+    fmt({ hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false })
+      .formatToParts(agora).map(x => [x.type, x.value])
+  );
+  $("horaMin").textContent = `${p.hour}:${p.minute}`;
+  $("segundos").textContent = p.second;
+
+  const data = fmt({ weekday:"long", day:"numeric", month:"long" }).format(agora);
+  $("dataHoje").textContent = data.charAt(0).toUpperCase() + data.slice(1);
+
+  const h = +p.hour;
+  $("saudacao").textContent =
+    h < 5  ? "Boa madrugada" :
+    h < 12 ? "Bom dia" :
+    h < 18 ? "Boa tarde" : "Boa noite";
+}
+
+/* ================================================================
+   4. CLIMA — Open-Meteo (sem chave)
+   ================================================================ */
+const TEMPO = {
+  0:["Céu limpo","sol"], 1:["Predomínio de sol","sol"], 2:["Parcialmente nublado","solnuvem"],
+  3:["Nublado","nuvem"], 45:["Nevoeiro","neblina"], 48:["Nevoeiro gelado","neblina"],
+  51:["Garoa fraca","chuva"], 53:["Garoa","chuva"], 55:["Garoa forte","chuva"],
+  61:["Chuva fraca","chuva"], 63:["Chuva","chuva"], 65:["Chuva forte","chuva"],
+  66:["Chuva congelante","chuva"], 67:["Chuva congelante","chuva"],
+  71:["Neve fraca","neve"], 73:["Neve","neve"], 75:["Neve forte","neve"], 77:["Grãos de neve","neve"],
+  80:["Pancadas isoladas","chuva"], 81:["Pancadas de chuva","chuva"], 82:["Pancadas fortes","chuva"],
+  85:["Pancadas de neve","neve"], 86:["Pancadas de neve","neve"],
+  95:["Tempestade","raio"], 96:["Tempestade com granizo","raio"], 99:["Tempestade com granizo","raio"]
+};
+
+/* ícones em tinta escura + acento dourado, para o painel creme */
+const T = "#A77208", C = "#6E5A34";
+const ICONES = {
+  sol:`<circle cx="32" cy="32" r="13" fill="${T}"/><g stroke="${T}" stroke-width="4" stroke-linecap="round"><path d="M32 4v7M32 53v7M4 32h7M53 32h7M12 12l5 5M47 47l5 5M52 12l-5 5M17 47l-5 5"/></g>`,
+  solnuvem:`<circle cx="24" cy="23" r="10" fill="${T}"/><g stroke="${T}" stroke-width="3.5" stroke-linecap="round"><path d="M24 3v6M4 23h6M10 9l4 4M38 9l-4 4"/></g><path d="M20 50a10 10 0 0 1 1-19.9A14 14 0 0 1 48 33a9 9 0 0 1-1 17z" fill="${C}"/>`,
+  nuvem:`<path d="M18 52a12 12 0 0 1 1.4-23.9A16 16 0 0 1 50 32a11 11 0 0 1-1 20z" fill="${C}"/>`,
+  chuva:`<path d="M18 40a12 12 0 0 1 1.4-23.9A16 16 0 0 1 50 20a11 11 0 0 1-1 20z" fill="${C}"/><g stroke="${T}" stroke-width="4" stroke-linecap="round"><path d="M22 47l-3 9M34 47l-3 9M46 47l-3 9"/></g>`,
+  raio:`<path d="M18 38a12 12 0 0 1 1.4-23.9A16 16 0 0 1 50 18a11 11 0 0 1-1 20z" fill="${C}"/><path d="M34 40l-11 15h8l-3 11 13-16h-8l4-10z" fill="${T}"/>`,
+  neblina:`<g stroke="${C}" stroke-width="5" stroke-linecap="round"><path d="M10 22h44M6 34h52M14 46h40"/></g>`,
+  neve:`<path d="M18 40a12 12 0 0 1 1.4-23.9A16 16 0 0 1 50 20a11 11 0 0 1-1 20z" fill="${C}"/><g fill="${T}"><circle cx="22" cy="51" r="3.5"/><circle cx="34" cy="55" r="3.5"/><circle cx="46" cy="51" r="3.5"/></g>`
+};
+const svg = nome => `<svg viewBox="0 0 64 64" aria-hidden="true">${ICONES[nome] || ICONES.nuvem}</svg>`;
+
+async function buscarClima(){
+  const url = "https://api.open-meteo.com/v1/forecast"
+    + `?latitude=${CONFIG.lat}&longitude=${CONFIG.lon}`
+    + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code"
+    + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+    + `&timezone=${encodeURIComponent(CONFIG.fuso)}&forecast_days=1`;
+
+  const r = await buscar(url);
+  if(!r.ok) throw new Error("clima " + r.status);
+  const d = await r.json();
+  const a = d.current, hoje = d.daily;
+  const [desc, icone] = TEMPO[a.weather_code] || ["—","nuvem"];
+
+  $("climaIcone").innerHTML  = svg(icone);
+  $("climaTemp").innerHTML   = Math.round(a.temperature_2m) + "<sup>°</sup>";
+  $("climaDesc").textContent = desc;
+  $("climaMax").textContent  = `Máx ${Math.round(hoje.temperature_2m_max[0])}° · Mín ${Math.round(hoje.temperature_2m_min[0])}°`;
+  $("climaSensacao").textContent = Math.round(a.apparent_temperature) + "°";
+  $("climaUmidade").textContent  = Math.round(a.relative_humidity_2m) + "%";
+  $("climaVento").textContent    = Math.round(a.wind_speed_10m) + " km/h";
+  $("climaChuva").textContent    = (hoje.precipitation_probability_max[0] ?? 0) + "%";
+}
+
+function climaDemo(){
+  $("climaIcone").innerHTML = svg("solnuvem");
+  $("climaTemp").innerHTML  = "23<sup>°</sup>";
+  $("climaDesc").textContent = "Parcialmente nublado";
+  $("climaMax").textContent  = "Máx 27° · Mín 15°";
+  $("climaSensacao").textContent = "24°";
+  $("climaUmidade").textContent  = "61%";
+  $("climaVento").textContent    = "11 km/h";
+  $("climaChuva").textContent    = "20%";
+}
+
+/* ================================================================
+   5. CÂMBIO — AwesomeAPI (sem chave)
+   ================================================================ */
+const dinheiro = v => Number(v).toLocaleString("pt-BR",{ minimumFractionDigits:2, maximumFractionDigits:2 });
+
+function pintarMoedas(linhas){
+  $("listaMoedas").innerHTML = linhas.map(m => `
+    <div class="moeda">
+      <span class="sigla">${m.sigla}</span>
+      <span class="valor"><small>R$</small>${m.valor}</span>
+      <span class="var ${m.pct >= 0 ? "sobe" : "desce"}">${m.pct >= 0 ? "▲" : "▼"} ${Math.abs(m.pct).toFixed(2)}%</span>
+    </div>`).join("");
+}
+
+async function buscarCambio(){
+  const r = await buscar("https://economia.awesomeapi.com.br/json/last/" + CONFIG.moedas.join(","));
+  if(!r.ok) throw new Error("câmbio " + r.status);
+  const d = await r.json();
+
+  pintarMoedas(CONFIG.moedas.map(par => {
+    const m = d[par.replace("-","")];
+    return { sigla: m.code, valor: dinheiro(m.bid), pct: parseFloat(m.pctChange) };
+  }));
+}
+
+function cambioDemo(){
+  pintarMoedas([
+    { sigla:"USD", valor:"5,42", pct: 0.38 },
+    { sigla:"EUR", valor:"5,89", pct:-0.21 },
+    { sigla:"ARS", valor:"0,0041", pct: 0.07 }
+  ]);
+}
+
+/* ================================================================
+   6. AGENDA DA CIDADE
+   ================================================================ */
+async function buscarAgenda(){
+  if(CONFIG.agendaURL){
+    try{
+      const r = await buscar(CONFIG.agendaURL, { cache:"no-store" });
+      if(r.ok){ estado.agenda = prepararAgenda(await r.json()); precarregar(); return; }
+    }catch(e){ /* cai na reserva */ }
+  }
+  estado.agenda = prepararAgenda(AGENDA_RESERVA);
+  precarregar();
+}
+
+function prepararAgenda(lista){
+  const agora = Date.now();
+  return lista
+    .filter(e => new Date(e.fim || e.inicio).getTime() >= agora - 6*3600*1000)
+    .sort((a,b) => new Date(a.inicio) - new Date(b.inicio))
+    .slice(0, 6)
+    .map(e => ({ ...e, imagem: e.imagem || CONFIG.imagemPadrao }));
+}
+
+/* carrega os cartazes fora da tela para a troca não piscar */
+function precarregar(){
+  estado.agenda.forEach(e => { const i = new Image(); i.src = e.imagem; });
+}
+
+function quandoTexto(e){
+  const ini  = new Date(e.inicio);
+  const hoje = fmt({ dateStyle:"short" }).format(new Date());
+  const dia  = fmt({ dateStyle:"short" }).format(ini);
+  const hora = fmt({ hour:"2-digit", minute:"2-digit", hour12:false }).format(ini);
+
+  const amanha = new Date(); amanha.setDate(amanha.getDate() + 1);
+  const ehAmanha = fmt({ dateStyle:"short" }).format(amanha) === dia;
+
+  if(dia === hoje) return `Hoje · ${hora}`;
+  if(ehAmanha)     return `Amanhã · ${hora}`;
+  const rotulo = fmt({ weekday:"long", day:"numeric", month:"long" }).format(ini);
+  return rotulo.charAt(0).toUpperCase() + rotulo.slice(1) + ` · ${hora}`;
+}
+
+/* ================================================================
+   7. RODÍZIO
+   ================================================================ */
+function montarRegua(){
+  const n = Math.max(estado.agenda.length, 1);
+  $("regua").innerHTML = Array.from({length:n}, () => "<i></i>").join("");
+}
+
+function mostrarSlide(){
+  const lista = estado.agenda;
+
+  if(!lista.length){
+    $("cartaz").classList.add("vazio");
+    $("evtQuando").textContent = "";
+    $("evtTitulo").textContent = "Agenda em atualização";
+    $("evtOnde").textContent   = "Consulte a recepção para dicas na cidade.";
+    return;
+  }
+
+  const e = lista[estado.slide % lista.length];
+  const alvo = $("evento");
+  alvo.classList.remove("animar"); void alvo.offsetWidth; alvo.classList.add("animar");
+
+  const img = $("evtImagem");
+  $("cartaz").classList.remove("vazio");
+  img.onerror = () => $("cartaz").classList.add("vazio");   // sem cartaz, o texto ocupa o card
+  img.src = e.imagem;
+  img.alt = e.titulo;
+
+  $("evtQuando").textContent = quandoTexto(e);
+  $("evtTitulo").textContent = e.titulo;
+  $("evtOnde").textContent   = e.local || "";
+
+  [...$("regua").children].forEach((b,i) => b.classList.toggle("on", i === estado.slide % lista.length));
+  $("recado").textContent = CONFIG.recados[estado.slide % CONFIG.recados.length];
+}
+
+function girar(){ estado.slide++; mostrarSlide(); }
+
+/* ================================================================
+   8. ESTADO DA CONEXÃO
+   ================================================================ */
+function marcarEstado(){
+  const p = $("ponto"), t = $("estadoTxt");
+  p.className = "ponto" + (estado.demo ? " demo" : estado.falhas ? " off" : "");
+  t.textContent = estado.demo ? "Modo demonstração" : estado.falhas ? "Reconectando" : "Ao vivo";
+}
+
+async function tentar(fn, reserva){
+  try{
+    await fn();
+    estado.falhas = 0;
+    estado.demo = false;
+  }
+  catch(e){
+    estado.falhas++;
+    estado.demo = true;
+    reserva();
+    agendarRetomada();
+  }
+  marcarEstado();
+}
+
+/* enquanto estiver em demonstração, insiste de minuto em minuto */
+function agendarRetomada(){
+  if(estado.retomada) return;
+  estado.retomada = setTimeout(async () => {
+    estado.retomada = null;
+    await tentar(buscarClima,  climaDemo);
+    await tentar(buscarCambio, cambioDemo);
+  }, CONFIG.tentarDeNovo);
+}
+
+/* ================================================================
+   9. PARTIDA
+   ================================================================ */
+async function iniciar(){
+  $("hotelNome").textContent   = CONFIG.hotel;
+  $("hotelLugar").textContent  = `${CONFIG.cidade} · ${CONFIG.uf}`;
+  $("rotuloClima").textContent = `Agora em ${CONFIG.cidade}`;
+
+  /* relógio e agenda primeiro: nada aqui depende da internet,
+     então a tela nunca fica presa em "Carregando" */
+  tique();
+  setInterval(tique, 1000);
+
+  estado.agenda = prepararAgenda(AGENDA_RESERVA);
+  precarregar();
+  montarRegua();
+  mostrarSlide();
+  setInterval(girar, CONFIG.segundosPorSlide * 1000);
+
+  marcarEstado();
+
+  /* rede depois, sem travar o resto */
+  tentar(buscarClima,  climaDemo);
+  tentar(buscarCambio, cambioDemo);
+  buscarAgenda().then(montarRegua);
+
+  setInterval(() => tentar(buscarClima,  climaDemo),  CONFIG.atualizarClima);
+  setInterval(() => tentar(buscarCambio, cambioDemo), CONFIG.atualizarCambio);
+  setInterval(async () => { await buscarAgenda(); montarRegua(); }, CONFIG.atualizarAgenda);
+
+  if("wakeLock" in navigator){
+    const segurar = () => navigator.wakeLock.request("screen").catch(()=>{});
+    segurar();
+    document.addEventListener("visibilitychange", () => document.visibilityState === "visible" && segurar());
+  }
+  setInterval(() => {
+    const h = +fmt({ hour:"2-digit", hour12:false }).format(new Date());
+    if(h === 4) location.reload();
+  }, 60 * 60 * 1000);
+}
+
+/* roda tanto se o script for lido no meio da página quanto depois de pronta */
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", iniciar);
+}else{
+  iniciar();
+}
+})();
+</script>
+
+</body>
+</html>
