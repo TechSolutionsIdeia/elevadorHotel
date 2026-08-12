@@ -50,14 +50,11 @@ body::before{
     linear-gradient(180deg, var(--ouro) 0%, var(--ouro-fundo-2) 100%);
 }
 
-/* altura própria: funciona solto na TV e dentro de um iframe */
 .cabine{
-  position:relative;z-index:1;
-  height:100vh;height:100dvh;
+  position:relative;z-index:1;height:100vh;height:100dvh;
   display:grid;grid-template-rows:auto 1fr auto;
   gap:var(--gap);
   padding:calc(var(--u) * 3);
-  overflow:hidden;
 }
 
 /* ---------- Cabeçalho ---------- */
@@ -87,12 +84,14 @@ body::before{
 
 /* ---------- Corpo ---------- */
 .corpo{
-  display:grid;grid-template-columns:1.35fr 1fr;
+  display:grid;grid-template-columns:30fr 70fr;
   gap:var(--gap);min-height:0;
 }
 .coluna{display:grid;gap:var(--gap);min-height:0}
-.esquerda{grid-template-rows:1.15fr 1fr}
-.direita{grid-template-rows:1fr auto}
+/* esquerda: relógio, clima e câmbio empilhados */
+.esquerda{grid-template-rows:auto 1fr auto}
+/* direita: só o rodízio de eventos, ocupando tudo */
+.direita{grid-template-rows:1fr}
 
 .bloco{
   background:var(--papel);
@@ -113,34 +112,38 @@ body::before{
 .relogio{align-items:flex-start;justify-content:center}
 .hora{display:flex;align-items:baseline;gap:calc(var(--u) * 1.2);line-height:.82}
 .hora .hm{
-  font-size:calc(var(--u) * 17);font-weight:600;
+  font-size:calc(var(--u) * 11);font-weight:600;
   letter-spacing:-.035em;font-variant-numeric:tabular-nums;
   color:var(--tinta);
 }
-.hora .seg{font-size:calc(var(--u) * 4);font-weight:600;color:var(--latao);letter-spacing:.02em}
+.hora .seg{font-size:calc(var(--u) * 3);font-weight:600;color:var(--latao);letter-spacing:.02em}
 .saudacao{
-  margin-top:calc(var(--u) * 1.8);
+  margin-top:calc(var(--u) * 1.2);
   font-family:var(--serif);font-style:italic;
-  font-size:calc(var(--u) * 2.9);color:var(--tinta-fraca);
+  font-size:calc(var(--u) * 2.4);color:var(--tinta-fraca);
 }
 
 /* ---------- Clima ---------- */
-.clima-agora{display:flex;align-items:center;gap:calc(var(--u) * 2.6)}
-.clima-agora svg{width:calc(var(--u) * 9);height:calc(var(--u) * 9);flex:none}
-.temp{font-size:calc(var(--u) * 8.4);font-weight:600;letter-spacing:-.03em;line-height:.9;color:var(--tinta)}
+.clima-agora{display:flex;align-items:center;gap:calc(var(--u) * 1.8);flex-wrap:wrap}
+.clima-agora svg{width:calc(var(--u) * 6.5);height:calc(var(--u) * 6.5);flex:none}
+.temp{font-size:calc(var(--u) * 6.4);font-weight:600;letter-spacing:-.03em;line-height:.9;color:var(--tinta)}
 .temp sup{font-size:.42em;font-weight:500;vertical-align:super;margin-left:.06em}
-.clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * .5);min-width:0}
-.clima-desc{font-size:calc(var(--u) * 2.5);font-weight:600;line-height:1.15}
-.clima-max{font-size:calc(var(--u) * 1.8);color:var(--tinta-fraca)}
+.clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * .4);min-width:0}
+.clima-desc{font-size:calc(var(--u) * 2);font-weight:600;line-height:1.15}
+.clima-max{font-size:calc(var(--u) * 1.5);color:var(--tinta-fraca)}
+
+/* quatro medidas em duas colunas: cabem sem espremer na faixa estreita */
 .clima-extra{
-  display:flex;gap:calc(var(--u) * 4);
-  margin-top:auto;padding-top:calc(var(--u) * 2);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:calc(var(--u) * 1.4) calc(var(--u) * 2);
+  margin-top:auto;padding-top:calc(var(--u) * 1.8);
   border-top:1px solid var(--linha);
 }
-.extra-item{display:flex;flex-direction:column;gap:calc(var(--u) * .4)}
-.extra-item b{font-size:calc(var(--u) * 2.4);font-weight:700;color:var(--tinta)}
+.extra-item{display:flex;flex-direction:column;gap:calc(var(--u) * .3)}
+.extra-item b{font-size:calc(var(--u) * 2);font-weight:700;color:var(--tinta)}
 .extra-item span{
-  font-size:calc(var(--u) * 1.35);letter-spacing:.16em;
+  font-size:calc(var(--u) * 1.2);letter-spacing:.14em;
   text-transform:uppercase;color:var(--tinta-fraca);
 }
 
@@ -164,30 +167,30 @@ body::before{
 .cartaz img{width:100%;height:100%;object-fit:contain;display:block}
 .cartaz.vazio{display:none}
 
-.evt-texto{flex:0 0 auto;display:flex;flex-direction:column;gap:calc(var(--u) * .8)}
+.evt-texto{flex:0 0 auto;display:flex;flex-direction:column;gap:calc(var(--u) * .9)}
 .evt-texto .quando{
-  font-size:calc(var(--u) * 1.8);font-weight:700;
+  font-size:calc(var(--u) * 2);font-weight:700;
   color:var(--latao);letter-spacing:.08em;text-transform:uppercase;
 }
 .evt-texto h2{
   font-family:var(--serif);font-weight:600;
-  font-size:calc(var(--u) * 3.6);line-height:1.05;color:var(--tinta);
+  font-size:calc(var(--u) * 4.6);line-height:1.05;color:var(--tinta);
 }
-.evt-texto .onde{font-size:calc(var(--u) * 1.9);color:var(--tinta-fraca);line-height:1.3}
+.evt-texto .onde{font-size:calc(var(--u) * 2.2);color:var(--tinta-fraca);line-height:1.3}
 
 .animar{animation:entra .55s cubic-bezier(.22,.7,.3,1) both}
 @keyframes entra{from{opacity:0;transform:translateY(calc(var(--u) * 1.4))}to{opacity:1;transform:none}}
 
 /* ---------- Câmbio ---------- */
-.cambio{gap:calc(var(--u) * 1.2);padding-top:calc(var(--u) * 2.2);padding-bottom:calc(var(--u) * 2.2)}
-.moeda{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:calc(var(--u) * 1.4)}
+.cambio{gap:calc(var(--u) * 1);padding-top:calc(var(--u) * 2);padding-bottom:calc(var(--u) * 2)}
+.moeda{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:calc(var(--u) * 1)}
 .moeda .sigla{
-  font-size:calc(var(--u) * 1.5);font-weight:700;
-  letter-spacing:.16em;color:var(--tinta-fraca);width:calc(var(--u) * 5);
+  font-size:calc(var(--u) * 1.35);font-weight:700;
+  letter-spacing:.14em;color:var(--tinta-fraca);width:calc(var(--u) * 4.6);
 }
-.moeda .valor{font-size:calc(var(--u) * 3.2);font-weight:700;letter-spacing:-.01em;color:var(--tinta)}
+.moeda .valor{font-size:calc(var(--u) * 2.6);font-weight:700;letter-spacing:-.01em;color:var(--tinta)}
 .moeda .valor small{font-size:.5em;font-weight:500;color:var(--tinta-fraca);margin-right:.2em}
-.moeda .var{font-size:calc(var(--u) * 1.7);font-weight:700}
+.moeda .var{font-size:calc(var(--u) * 1.5);font-weight:700}
 .sobe{color:var(--alta)}
 .desce{color:var(--baixa)}
 
@@ -207,16 +210,15 @@ body::before{
   font-size:calc(var(--u) * 1.3);color:rgba(255,255,255,.72);white-space:nowrap;
 }
 .ponto{width:calc(var(--u) * .9);height:calc(var(--u) * .9);border-radius:50%;background:#8CE0AE}
-.ponto.parado{background:rgba(255,255,255,.55)}
 .ponto.demo{background:var(--latao-claro)}
 .ponto.off{background:#F0A48C}
 
 /* ---------- Retrato ---------- */
 @media (max-aspect-ratio: 1/1){
   :root{--u:1.15vmin}
-  .corpo{grid-template-columns:1fr;grid-template-rows:auto 1fr auto auto}
+  .corpo{grid-template-columns:1fr;grid-template-rows:auto 1.4fr auto auto}
   .coluna{display:contents}
-  .esquerda .relogio{order:1}
+  .relogio{order:1}
   .rodizio{order:2;min-height:calc(var(--u) * 46)}
   .esquerda .bloco:nth-child(2){order:3}
   .cambio{order:4}
@@ -224,6 +226,7 @@ body::before{
   .marca h1{font-size:calc(var(--u) * 3.6)}
   .evt-texto h2{font-size:calc(var(--u) * 4)}
   .cartaz{min-height:calc(var(--u) * 26)}
+  .clima-extra{grid-template-columns:repeat(4,1fr)}
 }
 @media (prefers-reduced-motion: reduce){
   .animar{animation:none}
@@ -274,6 +277,11 @@ body::before{
         </div>
       </section>
 
+      <section class="bloco cambio">
+        <div class="rotulo">Câmbio do dia</div>
+        <div id="listaMoedas"></div>
+      </section>
+
     </div>
 
     <div class="coluna direita">
@@ -291,28 +299,17 @@ body::before{
         </div>
       </section>
 
-      <section class="bloco cambio">
-        <div class="rotulo">Câmbio do dia</div>
-        <div id="listaMoedas"></div>
-      </section>
-
     </div>
 
   </main>
 
   <footer class="rodape">
     <div class="recado" id="recado">Café da manhã das 6h30 às 10h, no térreo.</div>
-    <!-- "Script parado" é o estado inicial. Se ficar assim, o JavaScript não rodou. -->
-    <div class="estado"><span class="ponto parado" id="ponto"></span><span id="estadoTxt">Script parado</span></div>
+    <div class="estado"><span class="ponto" id="ponto"></span><span id="estadoTxt">Ao vivo</span></div>
   </footer>
 
 </div>
 
-<!--
-  Os atributos abaixo pedem para os otimizadores NÃO adiarem nem mexerem neste script.
-  Cobrem Perfmatters, WP Rocket, Autoptimize, LiteSpeed, SG Optimizer e Cloudflare Rocket Loader.
-  Sem eles, o painel congela numa TV, porque o script só rodaria após alguém tocar na tela.
--->
 <script
   data-cfasync="false"
   data-no-optimize="1"
@@ -322,10 +319,6 @@ body::before{
   data-wpfc-render="false"
   data-pagespeed-no-defer
   nitro-exclude>
-/* painel-elevador — não adiar (perfmatters exclusion: painel-elevador) */
-(function(){
-"use strict";
-
 /* ================================================================
    1. CONFIGURAÇÃO — é só aqui que o hotel mexe
    ================================================================ */
@@ -354,9 +347,7 @@ const CONFIG = {
   segundosPorSlide: 10,
   atualizarClima: 10 * 60 * 1000,
   atualizarCambio: 5 * 60 * 1000,
-  atualizarAgenda: 60 * 60 * 1000,
-  tentarDeNovo: 60 * 1000,   // quando cai em demonstração, tenta de novo em 1 min
-  esperaRede: 8000           // desiste de uma chamada travada em 8s
+  atualizarAgenda: 60 * 60 * 1000
 };
 
 /* Agenda de reserva — cada item aceita "imagem"; sem ela, entra a padrão */
@@ -371,19 +362,8 @@ const AGENDA_RESERVA = [
 /* ================================================================
    2. ESTADO
    ================================================================ */
-const estado = { agenda: [], slide: 0, demo: false, falhas: 0, retomada: null };
+const estado = { agenda: [], slide: 0, demo: false, falhas: 0 };
 const $ = id => document.getElementById(id);
-
-/* busca com prazo: um firewall que engole a conexão não trava mais a tela */
-async function buscar(url, opcoes){
-  const corte = new AbortController();
-  const relogio = setTimeout(() => corte.abort(), CONFIG.esperaRede);
-  try{
-    return await fetch(url, Object.assign({ signal: corte.signal }, opcoes || {}));
-  } finally {
-    clearTimeout(relogio);
-  }
-}
 
 /* ================================================================
    3. RELÓGIO E DATA
@@ -444,7 +424,7 @@ async function buscarClima(){
     + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
     + `&timezone=${encodeURIComponent(CONFIG.fuso)}&forecast_days=1`;
 
-  const r = await buscar(url);
+  const r = await fetch(url);
   if(!r.ok) throw new Error("clima " + r.status);
   const d = await r.json();
   const a = d.current, hoje = d.daily;
@@ -486,7 +466,7 @@ function pintarMoedas(linhas){
 }
 
 async function buscarCambio(){
-  const r = await buscar("https://economia.awesomeapi.com.br/json/last/" + CONFIG.moedas.join(","));
+  const r = await fetch("https://economia.awesomeapi.com.br/json/last/" + CONFIG.moedas.join(","));
   if(!r.ok) throw new Error("câmbio " + r.status);
   const d = await r.json();
 
@@ -510,7 +490,7 @@ function cambioDemo(){
 async function buscarAgenda(){
   if(CONFIG.agendaURL){
     try{
-      const r = await buscar(CONFIG.agendaURL, { cache:"no-store" });
+      const r = await fetch(CONFIG.agendaURL, { cache:"no-store" });
       if(r.ok){ estado.agenda = prepararAgenda(await r.json()); precarregar(); return; }
     }catch(e){ /* cai na reserva */ }
   }
@@ -596,28 +576,9 @@ function marcarEstado(){
 }
 
 async function tentar(fn, reserva){
-  try{
-    await fn();
-    estado.falhas = 0;
-    estado.demo = false;
-  }
-  catch(e){
-    estado.falhas++;
-    estado.demo = true;
-    reserva();
-    agendarRetomada();
-  }
+  try{ await fn(); estado.falhas = 0; }
+  catch(e){ estado.falhas++; estado.demo = true; reserva(); }
   marcarEstado();
-}
-
-/* enquanto estiver em demonstração, insiste de minuto em minuto */
-function agendarRetomada(){
-  if(estado.retomada) return;
-  estado.retomada = setTimeout(async () => {
-    estado.retomada = null;
-    await tentar(buscarClima,  climaDemo);
-    await tentar(buscarCambio, cambioDemo);
-  }, CONFIG.tentarDeNovo);
 }
 
 /* ================================================================
@@ -628,47 +589,37 @@ async function iniciar(){
   $("hotelLugar").textContent  = `${CONFIG.cidade} · ${CONFIG.uf}`;
   $("rotuloClima").textContent = `Agora em ${CONFIG.cidade}`;
 
-  /* relógio e agenda primeiro: nada aqui depende da internet,
-     então a tela nunca fica presa em "Carregando" */
   tique();
   setInterval(tique, 1000);
 
-  estado.agenda = prepararAgenda(AGENDA_RESERVA);
-  precarregar();
+  await tentar(buscarClima,  climaDemo);
+  await tentar(buscarCambio, cambioDemo);
+  await buscarAgenda();
+
   montarRegua();
   mostrarSlide();
   setInterval(girar, CONFIG.segundosPorSlide * 1000);
-
-  marcarEstado();
-
-  /* rede depois, sem travar o resto */
-  tentar(buscarClima,  climaDemo);
-  tentar(buscarCambio, cambioDemo);
-  buscarAgenda().then(montarRegua);
 
   setInterval(() => tentar(buscarClima,  climaDemo),  CONFIG.atualizarClima);
   setInterval(() => tentar(buscarCambio, cambioDemo), CONFIG.atualizarCambio);
   setInterval(async () => { await buscarAgenda(); montarRegua(); }, CONFIG.atualizarAgenda);
 
-  if("wakeLock" in navigator){
+  // Dentro de um iframe, quem cuida da tela acesa e do recarregamento é a
+  // página que hospeda o painel. Solto na TV, o painel cuida de si mesmo.
+  const soltoNaTela = (window.self === window.top);
+
+  if(soltoNaTela && "wakeLock" in navigator){
     const segurar = () => navigator.wakeLock.request("screen").catch(()=>{});
     segurar();
     document.addEventListener("visibilitychange", () => document.visibilityState === "visible" && segurar());
   }
-  setInterval(() => {
+  if(soltoNaTela) setInterval(() => {
     const h = +fmt({ hour:"2-digit", hour12:false }).format(new Date());
     if(h === 4) location.reload();
   }, 60 * 60 * 1000);
 }
 
-/* roda tanto se o script for lido no meio da página quanto depois de pronta */
-if(document.readyState === "loading"){
-  document.addEventListener("DOMContentLoaded", iniciar);
-}else{
-  iniciar();
-}
-})();
+iniciar();
 </script>
-
 </body>
 </html>
