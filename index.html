@@ -333,7 +333,7 @@ const CONFIG = {
   moedas: ["USD-BRL", "EUR-BRL", "ARS-BRL"],
 
   // Cartaz usado quando o evento não tiver imagem própria
-  imagemPadrao: "https://hotelcampopalace.com.br/wp-content/uploads/2026/06/banner-site.jpg.jpeg",
+  imagemPadrao: "https://hotelcampopalace.com.br/wp-content/uploads/2026/08/EVENTOS-CM-NO-PRATO.jpg-1.jpeg",
 
   recados: [
     "Café da manhã das 6h30 às 10h, no térreo.",
@@ -352,11 +352,7 @@ const CONFIG = {
 
 /* Agenda de reserva — cada item aceita "imagem"; sem ela, entra a padrão */
 const AGENDA_RESERVA = [
-  { titulo:"Feira do Produtor",                 inicio:"2026-08-12T07:00", fim:"2026-08-12T12:00", local:"Praça São José · Centro" },
-  { titulo:"Cinema na Praça",                   inicio:"2026-08-14T19:30", local:"Lago Azul · entrada gratuita" },
-  { titulo:"Orquestra Sinfônica da UNESPAR",    inicio:"2026-08-15T20:00", local:"Teatro Municipal · ingressos na bilheteria" },
-  { titulo:"Exposição Agrícola",                inicio:"2026-08-18T09:00", fim:"2026-08-22T22:00", local:"Parque de Exposições" },
-  { titulo:"Feirinha noturna de artesanato",    inicio:"2026-08-16T18:00", local:"Calçadão da Rua Brasil" }
+    { titulo:"Campo Mourão no Prato",                inicio:"2026-08-18", fim:"2026-09-01", local:"93 Estabelecimentos da cidade com pratos especiais" },
 ];
 
 /* ================================================================
@@ -512,8 +508,24 @@ function precarregar(){
   estado.agenda.forEach(e => { const i = new Image(); i.src = e.imagem; });
 }
 
+/* Para eventos de um dia só, mostra "Hoje · 21:00" / "Amanhã · 21:00" / "Segunda-feira, 17 de agosto · 21:00".
+   Para eventos de vários dias (fim diferente do início), mostra o período completo,
+   igual ao cartaz: "17 a 31 de agosto" (sem hora, já que não é um horário único). */
 function quandoTexto(e){
   const ini  = new Date(e.inicio);
+  const fim  = e.fim ? new Date(e.fim) : null;
+
+  if(fim && fim.toDateString() !== ini.toDateString()){
+    const diaIni = fmt({ day:"numeric" }).format(ini);
+    const diaFim = fmt({ day:"numeric" }).format(fim);
+    const mesIni = fmt({ month:"long" }).format(ini);
+    const mesFim = fmt({ month:"long" }).format(fim);
+
+    return mesIni === mesFim
+      ? `${diaIni} a ${diaFim} de ${mesFim}`
+      : `${diaIni} de ${mesIni} a ${diaFim} de ${mesFim}`;
+  }
+
   const hoje = fmt({ dateStyle:"short" }).format(new Date());
   const dia  = fmt({ dateStyle:"short" }).format(ini);
   const hora = fmt({ hour:"2-digit", minute:"2-digit", hour12:false }).format(ini);
