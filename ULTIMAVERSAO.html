@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#8A7541">
+<title>Pesquisa de Satisfação | Hotel Campo Palace</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* Tudo prefixado ou escopado dentro de .hcp — não vaza para o tema do site */
+.hcp{
+  --ouro:#8A7541;
+  --ouro-escuro:#6E5C33;
+  --creme:#FAF7F0;
+  --areia:#E8DCC0;
+  --tinta:#33302A;
+  --tinta-suave:#7A736A;
+  --branco:#FFFFFF;
+  --raio:26px;
+  --display:'Marcellus', Georgia, 'Times New Roman', serif;
+  --corpo:'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+
+  position:fixed;
+  inset:0;
+  z-index:99990;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(12px,3vmin,40px);
+  padding-top:max(clamp(12px,3vmin,40px), env(safe-area-inset-top));
+  padding-bottom:max(clamp(12px,3vmin,40px), env(safe-area-inset-bottom));
+  font-family:var(--corpo);
+  color:var(--tinta);
+  background:#2b2721 url('https://hotelcampopalace.com.br/wp-content/uploads/2026/06/foto-01.jpg-scaled.jpeg') center/cover no-repeat;
+  overflow:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.hcp *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+/* trava a rolagem do site só depois que o script roda */
+html.hcp-trava, body.hcp-trava{ overflow:hidden; height:100%; }
+
+.hcp::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(30,26,20,.35), rgba(30,26,20,.6));
+  pointer-events:none;
+}
+
+.cartao{
+  position:relative;
+  width:min(100%, 940px);
+  max-height:100%;
+  height:100%;
+  background:var(--branco);
+  border-radius:var(--raio);
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.topo{
+  padding:clamp(16px,2.6vmin,28px) clamp(20px,4vmin,44px) 0;
+  text-align:center;
+  flex:0 0 auto;
+}
+
+.marca{
+  font-family:var(--display);
+  color:var(--ouro);
+  font-size:clamp(19px,2.9vmin,28px);
+  letter-spacing:.06em;
+}
+
+.marca span{
+  display:block;
+  font-family:var(--corpo);
+  font-size:clamp(10px,1.35vmin,12px);
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--tinta-suave);
+  margin-top:6px;
+}
+
+.trilha{
+  height:4px;
+  background:var(--areia);
+  border-radius:99px;
+  margin:clamp(14px,2.4vmin,22px) 0 0;
+  overflow:hidden;
+}
+
+.trilha i{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--ouro);
+  border-radius:99px;
+  transition:width .45s cubic-bezier(.4,0,.2,1);
+}
+
+.palco{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  padding:clamp(16px,3vmin,34px) clamp(20px,4vmin,44px) clamp(18px,3vmin,36px);
+}
+
+.tela{
+  display:none;
+  flex-direction:column;
+  width:100%;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+.tela.ativa{
+  display:flex;
+  animation:hcpEntra .38s cubic-bezier(.2,.7,.3,1);
+}
+
+@keyframes hcpEntra{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:none; }
+}
+
+.eyebrow{
+  font-size:clamp(10px,1.4vmin,12px);
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--ouro);
+  font-weight:600;
+  margin-bottom:clamp(8px,1.6vmin,14px);
+  flex:0 0 auto;
+}
+
+.pergunta{
+  font-family:var(--display);
+  font-size:clamp(21px,3.4vmin,36px);
+  line-height:1.28;
+  color:var(--tinta);
+  margin-bottom:clamp(16px,3vmin,30px);
+  flex:0 0 auto;
+}
+
+.opcoes{
+  display:grid;
+  gap:clamp(10px,1.6vmin,16px);
+  grid-template-columns:1fr;
+  flex:1 1 auto;
+  align-content:center;
+  min-height:0;
+}
+
+.opcao{
+  display:flex;
+  align-items:center;
+  gap:clamp(12px,2vmin,20px);
+  width:100%;
+  min-height:clamp(58px,9vmin,88px);
+  padding:clamp(10px,1.8vmin,18px) clamp(14px,2.4vmin,24px);
+  background:var(--creme);
+  border:2px solid var(--areia);
+  border-radius:18px;
+  font-family:var(--corpo);
+  font-size:clamp(15px,2.1vmin,21px);
+  font-weight:600;
+  color:var(--ouro-escuro);
+  text-align:left;
+  line-height:1.3;
+  cursor:pointer;
+  transition:transform .16s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.opcao .rosto{
+  font-size:clamp(26px,4.2vmin,38px);
+  line-height:1;
+  flex:0 0 auto;
+}
+
+.opcao:active{ transform:scale(.975); }
+
+.opcao.escolhida{
+  background:var(--ouro);
+  border-color:var(--ouro);
+  color:#fff;
+  box-shadow:0 10px 24px rgba(138,117,65,.32);
+}
+
+@media (min-width:760px) and (orientation:landscape){
+  .opcoes{ grid-template-columns:repeat(5,1fr); gap:clamp(10px,1.4vmin,16px); }
+  .opcao{
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    gap:clamp(6px,1.2vmin,12px);
+    min-height:clamp(104px,18vmin,180px);
+    font-size:clamp(13px,1.7vmin,18px);
+  }
+}
+
+.rodape{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:clamp(14px,2.4vmin,24px);
+  flex:0 0 auto;
+}
+
+.voltar{
+  background:none;
+  border:none;
+  font-family:var(--corpo);
+  font-size:clamp(13px,1.7vmin,16px);
+  font-weight:600;
+  color:var(--tinta-suave);
+  cursor:pointer;
+  padding:12px 4px;
+}
+
+.voltar[hidden]{ display:none; }
+
+.botao{
+  font-family:var(--corpo);
+  font-weight:700;
+  font-size:clamp(15px,2vmin,19px);
+  padding:clamp(14px,2.2vmin,20px) clamp(26px,4vmin,44px);
+  border:none;
+  border-radius:16px;
+  background:var(--ouro);
+  color:#fff;
+  cursor:pointer;
+  transition:background .2s ease, transform .16s ease;
+  min-height:56px;
+}
+
+.botao:active{ transform:scale(.98); }
+
+.elo{
+  background:none;
+  border:none;
+  font-family:var(--corpo);
+  font-weight:600;
+  font-size:clamp(13px,1.8vmin,16px);
+  color:var(--ouro);
+  cursor:pointer;
+  padding:10px 8px;
+  text-decoration:underline;
+  text-underline-offset:5px;
+}
+
+.boas-vindas{
+  text-align:center;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(14px,2.4vmin,26px);
+}
+
+.boas-vindas .titulo{
+  font-family:var(--display);
+  font-size:clamp(28px,5vmin,54px);
+  line-height:1.15;
+  color:var(--tinta);
+}
+
+.boas-vindas p{
+  font-size:clamp(15px,2.1vmin,21px);
+  color:var(--tinta-suave);
+  max-width:38ch;
+  line-height:1.6;
+}
+
+.pulsa{ animation:hcpPulsa 2.6s ease-in-out infinite; }
+
+@keyframes hcpPulsa{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.035); }
+}
+
+.obrigado{
+  text-align:center;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(12px,2.2vmin,22px);
+}
+
+.visto{
+  width:clamp(64px,11vmin,104px);
+  height:clamp(64px,11vmin,104px);
+  border-radius:50%;
+  background:var(--ouro);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(32px,5.4vmin,54px);
+  animation:hcpSobe .5s cubic-bezier(.2,.8,.3,1);
+}
+
+@keyframes hcpSobe{
+  from{ transform:scale(.6); opacity:0; }
+  to{ transform:scale(1); opacity:1; }
+}
+
+.obrigado .titulo{
+  font-family:var(--display);
+  font-size:clamp(26px,4.6vmin,48px);
+  color:var(--tinta);
+}
+
+.obrigado p{
+  font-size:clamp(15px,2.1vmin,20px);
+  color:var(--tinta-suave);
+  line-height:1.6;
+  max-width:38ch;
+}
+
+.contagem{
+  font-size:clamp(12px,1.6vmin,14px);
+  color:var(--tinta-suave);
+  letter-spacing:.06em;
+}
+
+/* ---------- painel de avaliações ---------- */
+.resultados{ gap:clamp(12px,2.2vmin,22px); }
+
+.placar{
+  display:flex;
+  align-items:center;
+  gap:clamp(14px,2.6vmin,28px);
+  background:var(--creme);
+  border:2px solid var(--areia);
+  border-radius:22px;
+  padding:clamp(14px,2.4vmin,26px) clamp(16px,3vmin,30px);
+  flex:0 0 auto;
+}
+
+.placar .numero{
+  font-family:var(--display);
+  font-size:clamp(42px,7.4vmin,78px);
+  line-height:.95;
+  color:var(--ouro);
+}
+
+.placar .estrelas{
+  color:var(--ouro);
+  font-size:clamp(15px,2.3vmin,24px);
+  letter-spacing:.14em;
+  display:block;
+}
+
+.placar small{
+  display:block;
+  margin-top:6px;
+  font-size:clamp(11px,1.5vmin,14px);
+  color:var(--tinta-suave);
+}
+
+.placar .satisfacao{
+  margin-left:auto;
+  text-align:right;
+  padding-left:clamp(12px,2vmin,20px);
+  border-left:1px solid var(--areia);
+}
+
+.placar .satisfacao b{
+  display:block;
+  font-family:var(--display);
+  font-size:clamp(26px,4.6vmin,46px);
+  line-height:1;
+  color:var(--tinta);
+}
+
+.placar .satisfacao span{
+  display:block;
+  margin-top:6px;
+  font-size:clamp(10px,1.4vmin,12px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--tinta-suave);
+}
+
+.barras{
+  display:grid;
+  gap:clamp(10px,1.9vmin,18px);
+  flex:1 1 auto;
+  align-content:start;
+  min-height:0;
+  overflow-y:auto;
+  padding-right:4px;
+}
+
+.linha .rotulo{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  font-size:clamp(13px,1.9vmin,18px);
+  font-weight:600;
+  color:var(--tinta);
+  margin-bottom:8px;
+}
+
+.linha .rotulo em{
+  font-style:normal;
+  font-family:var(--display);
+  font-size:1.15em;
+  color:var(--ouro);
+}
+
+.barra{
+  height:clamp(10px,1.6vmin,16px);
+  background:var(--areia);
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.barra i{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg, var(--ouro), var(--ouro-escuro));
+  border-radius:99px;
+  transition:width .7s cubic-bezier(.4,0,.2,1);
+}
+
+.linha small{
+  display:block;
+  margin-top:6px;
+  font-size:clamp(11px,1.4vmin,13px);
+  color:var(--tinta-suave);
+}
+
+.sem-dados{
+  text-align:center;
+  color:var(--tinta-suave);
+  font-size:clamp(14px,2vmin,18px);
+  line-height:1.6;
+  padding:clamp(24px,5vmin,50px) 0;
+}
+
+.mini-placar{
+  font-size:clamp(13px,1.8vmin,16px);
+  color:var(--tinta-suave);
+}
+
+.mini-placar b{ color:var(--ouro); font-weight:700; }
+
+/* ---------- comentário livre ---------- */
+.recado-livre{ gap:clamp(10px,1.8vmin,18px); }
+
+.recado-livre textarea{
+  width:100%;
+  flex:1 1 auto;
+  min-height:clamp(110px,20vmin,240px);
+  border:2px solid var(--areia);
+  border-radius:18px;
+  padding:clamp(14px,2.2vmin,20px);
+  font-family:var(--corpo);
+  font-size:clamp(15px,2.1vmin,20px);
+  line-height:1.5;
+  color:var(--tinta);
+  background:var(--creme);
+  resize:none;
+  outline:none;
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+.recado-livre textarea:focus{ border-color:var(--ouro); background:#fff; }
+.recado-livre textarea::placeholder{ color:#B4AB9B; }
+
+.contador{
+  align-self:flex-end;
+  font-size:clamp(11px,1.4vmin,13px);
+  color:var(--tinta-suave);
+  flex:0 0 auto;
+}
+
+.acoes{
+  display:flex;
+  align-items:center;
+  gap:clamp(10px,2vmin,18px);
+  flex:0 0 auto;
+}
+
+.acoes .botao{ margin-left:auto; }
+
+/* ============================================================
+   DESCANSO DE TELA — painel do elevador embutido
+   ============================================================ */
+.descanso{
+  position:absolute;
+  inset:0;
+  z-index:80;
+  background:#A77208;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .7s ease, visibility .7s;
+  cursor:pointer;
+}
+
+.descanso.acesa{ opacity:1; visibility:visible; }
+
+/* o painel roda isolado: CSS e script dele não conversam com esta página */
+.descanso iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+
+/* camada invisível por cima: o toque precisa chegar aqui, não no iframe */
+.captura{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  background:transparent;
+}
+
+.convite{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:max(clamp(18px,4vmin,46px), env(safe-area-inset-bottom));
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(8px,1.6vmin,14px);
+  padding:clamp(10px,1.8vmin,16px) 16px;
+  font-family:var(--corpo);
+  font-weight:700;
+  font-size:clamp(13px,2vmin,19px);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#fff;
+  background:linear-gradient(180deg, rgba(20,15,4,0), rgba(20,15,4,.72));
+  text-shadow:0 2px 14px rgba(0,0,0,.7);
+  pointer-events:none;
+}
+
+.convite i{
+  width:clamp(9px,1.5vmin,13px);
+  height:clamp(9px,1.5vmin,13px);
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 0 0 rgba(255,255,255,.7);
+  animation:hcpToque 2.2s ease-out infinite;
+}
+
+@keyframes hcpToque{
+  0%{ box-shadow:0 0 0 0 rgba(255,255,255,.6); }
+  70%{ box-shadow:0 0 0 clamp(14px,3vmin,28px) rgba(255,255,255,0); }
+  100%{ box-shadow:0 0 0 0 rgba(255,255,255,0); }
+}
+
+.pendentes{
+  position:absolute;
+  right:14px;
+  bottom:max(14px, env(safe-area-inset-bottom));
+  display:none;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--areia);
+  border-radius:99px;
+  padding:8px 14px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--ouro-escuro);
+  z-index:90;
+}
+
+.pendentes.visivel{ display:flex; }
+.pendentes .ponto{ width:8px; height:8px; border-radius:50%; background:#E08A2E; }
+
+.diagnostico{
+  position:absolute;
+  left:14px;
+  bottom:max(14px, env(safe-area-inset-bottom));
+  display:none;
+  max-width:60vw;
+  background:rgba(20,18,15,.9);
+  color:#fff;
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:12px;
+  line-height:1.5;
+  z-index:95;
+}
+
+.diagnostico.visivel{ display:block; }
+
+@media (prefers-reduced-motion: reduce){
+  .hcp *{ animation:none !important; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="hcp" id="hcp">
+
+  <div class="cartao">
+
+    <div class="topo">
+      <div class="marca">Hotel Campo Palace<span>Pesquisa de satisfação</span></div>
+      <div class="trilha"><i id="progresso"></i></div>
+    </div>
+
+    <div class="palco">
+
+      <section class="tela boas-vindas ativa" id="telaInicio">
+        <div class="titulo">Pesquisa de Satisfação</div>
+        <p>Gostaríamos de saber quanto você foi feliz em sua estadia conosco. Leva menos de um minuto.</p>
+        <button class="botao pulsa" id="btnComecar">Começar</button>
+        <!-- <button class="elo" id="btnVerResultados">Ver as avaliações dos hóspedes</button> -->
+      </section>
+
+      <section class="tela" id="telaPergunta">
+        <div class="eyebrow" id="eyebrow"></div>
+        <h1 class="pergunta" id="tituloPergunta"></h1>
+        <div class="opcoes" id="opcoes"></div>
+        <div class="rodape">
+          <button class="voltar" id="btnVoltar">← Voltar</button>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="tela recado-livre" id="telaComentario">
+        <div class="eyebrow" id="eyebrowComentario"></div>
+        <h1 class="pergunta">Quer deixar uma sugestão ou uma reclamação?</h1>
+        <textarea id="comentario" maxlength="600" rows="4"
+          placeholder="Escreva aqui. Se preferir, pode pular esta parte."
+          aria-label="Sugestão ou reclamação"></textarea>
+        <div class="contador" id="contador">0 / 600</div>
+        <div class="acoes">
+          <button class="voltar" id="btnVoltarComentario">← Voltar</button>
+          <button class="elo" id="btnPular">Pular</button>
+          <button class="botao" id="btnEnviar">Enviar avaliação</button>
+        </div>
+      </section>
+
+      <section class="tela obrigado" id="telaObrigado">
+        <div class="visto">✓</div>
+        <div class="titulo">Obrigado!</div>
+        <p>Sua pesquisa foi enviada com sucesso.<br>Agradecemos pela sua avaliação e preferência.</p>
+        <div class="mini-placar" id="miniPlacar"></div>
+        <!-- <button class="elo" id="btnVerResultados2">Ver as avaliações dos hóspedes</button> -->
+        <div class="contagem" id="contagem"></div>
+      </section>
+
+      <section class="tela resultados" id="telaResultados">
+        <div class="eyebrow">O que os hóspedes estão dizendo</div>
+        <div class="placar">
+          <div><div class="numero" id="notaGeral">—</div></div>
+          <div>
+            <span class="estrelas" id="estrelasGeral">☆☆☆☆☆</span>
+            <small id="totalRespostas">Aguardando as primeiras avaliações</small>
+          </div>
+          <div class="satisfacao">
+            <b id="pctSatisfacao">—</b>
+            <span>Satisfeitos</span>
+          </div>
+        </div>
+        <div class="barras" id="barras"></div>
+        <div class="rodape">
+          <button class="voltar" id="btnFecharResultados">← Voltar</button>
+          <span class="contagem" id="atualizado"></span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- painel do elevador enquanto ninguém mexe no tablet -->
+  <div class="descanso" id="descanso" aria-hidden="true">
+    <iframe id="painelElevador" title="Painel informativo" scrolling="no"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    <div class="captura" id="captura"></div>
+    <div class="convite"><i></i>Toque na tela para avaliar</div>
+  </div>
+
+  <div class="pendentes" id="pendentes"><span class="ponto"></span><span id="pendentesTexto"></span></div>
+  <div class="diagnostico" id="diagnostico"></div>
+
+</div>
+
+<script
+  data-cfasync="false"
+  data-no-optimize="1"
+  data-no-defer="1"
+  data-noptimize="1"
+  data-nowprocket
+  data-wpfc-render="false"
+  data-pagespeed-no-defer
+  nitro-exclude>
+/* pesquisa-hcp — não adiar (perfmatters exclusion: pesquisa-hcp) */
+(function(){
+  'use strict';
+
+  var WEBHOOK_URL    = 'https://n8n.paessolucoes.com/webhook/pesquisa-satisfacao';
+  var RESULTADOS_URL = 'https://n8n.paessolucoes.com/webhook/pesquisa-resultados';
+
+  /* Tela de descanso: endereço do painel do elevador.
+     A tela de reserva (relógio) foi removida a pedido — o iframe é sempre
+     forçado a aparecer, mesmo que o carregamento não possa ser confirmado. */
+  var PAINEL_URL = 'https://techsolutionsideia.github.io/elevadorHotel/';
+
+  var ESCALA = [
+    { rosto:'😄', texto:'Muito bom',  valor:5 },
+    { rosto:'🙂', texto:'Bom',        valor:4 },
+    { rosto:'😐', texto:'Média',      valor:3 },
+    { rosto:'🙁', texto:'Ruim',       valor:2 },
+    { rosto:'😞', texto:'Muito ruim', valor:1 }
+  ];
+
+  var PERGUNTAS = [
+    { chave:'checkin',     curto:'Check-in',          titulo:'Check-in: A recepção foi ágil e acolhedora?' },
+    { chave:'limpeza',     curto:'Quarto',            titulo:'Quarto: A limpeza, conforto da cama e funcionamento das instalações atenderam às expectativas?' },
+    { chave:'indicaria',   curto:'Café da manhã',     titulo:'Alimentação: A qualidade e a variedade do café da manhã foram satisfatórias?' },
+    { chave:'wifi',        curto:'Wi-Fi',             titulo:'Serviços: Como você avalia o Wi-fi?' },
+    { chave:'experiencia', curto:'Experiência geral', titulo:'Como você avalia sua experiência no hotel?' }
+  ];
+
+  var TEMPO_OCIOSO     = 90000;   /* pesquisa pela metade volta ao início */
+  var TEMPO_COMENTARIO = 180000;  /* escrevendo, o hóspede merece mais tempo */
+  var TEMPO_OBRIGADO   = 8000;
+  var TEMPO_DESCANSO   = 40000;   /* parado na tela inicial → entra o painel */
+  var TEMPO_RECARGA    = 1800000; /* recarrega o painel a cada 30 min */
+  var TEMPO_PAINEL     = 45000;
+  var INTERVALO_PAINEL = 20000;
+
+  var DEBUG  = /[?&]debug=1/.test(location.search);
+  var PAINEL = /[?&]modo=painel/.test(location.search);
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* liga um clique só se o elemento existir — botões comentados não quebram a página */
+  function liga(id, fn){
+    var el = $(id);
+    if (el) el.addEventListener('click', fn);
+  }
+
+  var telas = {
+    inicio:     $('telaInicio'),
+    pergunta:   $('telaPergunta'),
+    comentario: $('telaComentario'),
+    obrigado:   $('telaObrigado'),
+    resultados: $('telaResultados')
+  };
+
+  var respostas = {};
+  var indice = 0;
+  var fila = [];
+  var TOTAL = PERGUNTAS.length + 1;   /* as 5 notas + o comentário */
+  var enviando = false;
+  var descansando = false;
+
+  var timerOcioso = null, timerObrigado = null, timerPainel = null,
+      timerAtualiza = null, timerDescanso = null, timerRecarga = null;
+
+  var linhasLog = [];
+  function log(msg){
+    if (!DEBUG) return;
+    var d = $('diagnostico');
+    linhasLog.push(msg);
+    if (linhasLog.length > 6) linhasLog.shift();
+    d.classList.add('visivel');
+    d.textContent = linhasLog.join(' · ');
+  }
+
+  /* ---------- fila local (queda de internet) ---------- */
+  var CHAVE = 'hcp_pendentes_escala';
+
+  function lerFila(){
+    try{
+      var bruto = window.localStorage.getItem(CHAVE);
+      return bruto ? JSON.parse(bruto) : [];
+    }catch(e){ return fila; }
+  }
+
+  function gravarFila(lista){
+    fila = lista;
+    try{ window.localStorage.setItem(CHAVE, JSON.stringify(lista)); }catch(e){}
+    pintarPendentes();
+  }
+
+  function pintarPendentes(){
+    var n = fila.length;
+    $('pendentes').classList.toggle('visivel', n > 0);
+    $('pendentesTexto').textContent = n === 1 ? '1 pesquisa aguardando envio' : n + ' pesquisas aguardando envio';
+  }
+
+  /* ---------- placar local ---------- */
+  var CHAVE_PLACAR = 'hcp_placar_v1';
+
+  function placarVazio(){
+    var p = { total:0, perguntas:{} };
+    PERGUNTAS.forEach(function(q){
+      p.perguntas[q.chave] = {};
+      ESCALA.forEach(function(o){ p.perguntas[q.chave][o.texto] = 0; });
+    });
+    return p;
+  }
+
+  function lerPlacarLocal(){
+    try{
+      var bruto = window.localStorage.getItem(CHAVE_PLACAR);
+      if (!bruto) return placarVazio();
+      return normalizar(JSON.parse(bruto)) || placarVazio();
+    }catch(e){ return placarVazio(); }
+  }
+
+  function somarLocal(dados){
+    var p = lerPlacarLocal();
+    var contou = false;
+    PERGUNTAS.forEach(function(q){
+      var r = dados[q.chave];
+      if (r && p.perguntas[q.chave] && typeof p.perguntas[q.chave][r] === 'number'){
+        p.perguntas[q.chave][r]++;
+        contou = true;
+      }
+    });
+    if (contou) p.total++;
+    try{ window.localStorage.setItem(CHAVE_PLACAR, JSON.stringify(p)); }catch(e){}
+    return p;
+  }
+
+  function normalizar(bruto){
+    if (!bruto) return null;
+
+    if (Array.isArray(bruto)){
+      var p = placarVazio();
+      bruto.forEach(function(linha){
+        if (!linha) return;
+        var contou = false;
+        PERGUNTAS.forEach(function(q){
+          var r = linha[q.chave];
+          if (r && typeof p.perguntas[q.chave][r] === 'number'){ p.perguntas[q.chave][r]++; contou = true; }
+        });
+        if (contou) p.total++;
+      });
+      return p;
+    }
+
+    if (bruto.perguntas){
+      var q2 = placarVazio();
+      PERGUNTAS.forEach(function(q){
+        var origem = bruto.perguntas[q.chave] || {};
+        ESCALA.forEach(function(o){ q2.perguntas[q.chave][o.texto] = Number(origem[o.texto]) || 0; });
+      });
+      var maior = 0;
+      PERGUNTAS.forEach(function(q){
+        var n = 0;
+        ESCALA.forEach(function(o){ n += q2.perguntas[q.chave][o.texto]; });
+        if (n > maior) maior = n;
+      });
+      q2.total = Number(bruto.total) || maior;
+      return q2;
+    }
+
+    return null;
+  }
+
+  function buscarRemoto(){
+    if (!RESULTADOS_URL) return Promise.resolve(null);
+    return fetch(RESULTADOS_URL, { cache:'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ return normalizar(j); })
+      ['catch'](function(){ return null; });
+  }
+
+  /* ---------- painel ---------- */
+  function numero(n){ return n.toFixed(1).replace('.', ','); }
+
+  function estrelas(m){
+    var cheias = Math.round(m), s = '';
+    for (var i = 1; i <= 5; i++) s += (i <= cheias ? '★' : '☆');
+    return s;
+  }
+
+  function mediaDe(contagem){
+    var soma = 0, n = 0;
+    ESCALA.forEach(function(o){
+      var c = Number(contagem[o.texto]) || 0;
+      soma += o.valor * c;
+      n += c;
+    });
+    return { media: n ? soma / n : 0, n: n };
+  }
+
+  function desenharPlacar(p){
+    var caixa = $('barras');
+    if (!caixa) return;
+    caixa.innerHTML = '';
+
+    var somaTotal = 0, nTotal = 0, bons = 0;
+    PERGUNTAS.forEach(function(q){
+      var c = (p.perguntas || {})[q.chave] || {};
+      var m = mediaDe(c);
+      somaTotal += m.media * m.n;
+      nTotal += m.n;
+      bons += (Number(c['Muito bom']) || 0) + (Number(c['Bom']) || 0);
+    });
+
+    var geral = nTotal ? somaTotal / nTotal : 0;
+    $('notaGeral').textContent      = nTotal ? numero(geral) : '—';
+    $('estrelasGeral').textContent  = estrelas(geral);
+    $('pctSatisfacao').textContent  = nTotal ? Math.round((bons / nTotal) * 100) + '%' : '—';
+
+    var respondentes = p.total || 0;
+    $('totalRespostas').textContent = respondentes === 0
+      ? 'Aguardando as primeiras avaliações'
+      : (respondentes === 1 ? 'Com base em 1 avaliação' : 'Com base em ' + respondentes + ' avaliações');
+
+    if (!nTotal){
+      var vazio = document.createElement('div');
+      vazio.className = 'sem-dados';
+      vazio.textContent = 'Seja o primeiro a avaliar a sua estadia.';
+      caixa.appendChild(vazio);
+      return;
+    }
+
+    PERGUNTAS.forEach(function(q){
+      var c = (p.perguntas || {})[q.chave] || {};
+      var m = mediaDe(c);
+
+      var linha = document.createElement('div');
+      linha.className = 'linha';
+
+      var rotulo = document.createElement('div');
+      rotulo.className = 'rotulo';
+      var nome = document.createElement('span');
+      nome.textContent = q.curto;
+      var nota = document.createElement('em');
+      nota.textContent = m.n ? numero(m.media) : '—';
+      rotulo.appendChild(nome);
+      rotulo.appendChild(nota);
+
+      var barra = document.createElement('div');
+      barra.className = 'barra';
+      var preenche = document.createElement('i');
+      barra.appendChild(preenche);
+
+      var legenda = document.createElement('small');
+      var melhor = (Number(c['Muito bom']) || 0) + (Number(c['Bom']) || 0);
+      legenda.textContent = m.n
+        ? (m.n + (m.n === 1 ? ' resposta' : ' respostas') + ' · ' + Math.round((melhor / m.n) * 100) + '% bom ou muito bom')
+        : 'Ainda sem respostas';
+
+      linha.appendChild(rotulo);
+      linha.appendChild(barra);
+      linha.appendChild(legenda);
+      caixa.appendChild(linha);
+
+      setTimeout(function(){ preenche.style.width = (m.media / 5 * 100) + '%'; }, 30);
+    });
+
+    var agora = new Date();
+    $('atualizado').textContent = 'Atualizado às ' +
+      ('0' + agora.getHours()).slice(-2) + ':' + ('0' + agora.getMinutes()).slice(-2);
+  }
+
+  function desenharMini(p){
+    var alvo = $('miniPlacar');
+    if (!alvo) return;
+    var somaTotal = 0, nTotal = 0;
+    PERGUNTAS.forEach(function(q){
+      var m = mediaDe((p.perguntas || {})[q.chave] || {});
+      somaTotal += m.media * m.n;
+      nTotal += m.n;
+    });
+    if (!nTotal){ alvo.textContent = ''; return; }
+    var geral = somaTotal / nTotal;
+    alvo.innerHTML = 'Nota da casa agora: <b>' + numero(geral) + ' ' + estrelas(geral) + '</b> · ' +
+      (p.total || 0) + (p.total === 1 ? ' avaliação' : ' avaliações');
+  }
+
+  function atualizarPainel(){
+    return buscarRemoto().then(function(remoto){
+      var p = remoto || lerPlacarLocal();
+      desenharPlacar(p);
+      desenharMini(p);
+      return p;
+    });
+  }
+
+  /* ============================================================
+     DESCANSO DE TELA — painel do elevador embutido
+     Tela de reserva removida: o iframe é sempre exibido, sem checagem
+     de conteúdo carregado nem fallback de relógio.
+     ============================================================ */
+  var timerRelogio = null;
+
+  function carregarPainel(){
+    var quadro = $('painelElevador');
+    if (!quadro || !PAINEL_URL) return;
+    if (quadro.getAttribute('src')) return;   /* já carregado */
+
+    quadro.addEventListener('load', function(){
+      log('Painel carregado (evento load dparado).');
+    });
+
+    quadro.addEventListener('error', function(){
+      log('Evento de erro no iframe — mantendo mesmo assim.');
+    });
+
+    quadro.src = PAINEL_URL;
+    log('Iframe apontado para: ' + PAINEL_URL);
+  }
+
+  /* o painel busca clima e câmbio sozinho; recarregar de tempos em tempos
+     evita que ele fique parado se algo travar lá dentro */
+  function recarregarPainel(){
+    var quadro = $('painelElevador');
+    if (!quadro || !quadro.getAttribute('src')) return;
+    try{ quadro.contentWindow.location.reload(); }
+    catch(e){
+      var alvo = quadro.src;
+      quadro.src = '';
+      quadro.src = alvo;
+    }
+  }
+
+  function entrarDescanso(){
+    if (descansando || PAINEL) return;
+    if (!telas.inicio.classList.contains('ativa')) return;   /* nunca no meio da pesquisa */
+
+    descansando = true;
+    carregarPainel();
+
+    $('descanso').classList.add('acesa');
+
+    clearInterval(timerRecarga);
+    timerRecarga = setInterval(recarregarPainel, TEMPO_RECARGA);
+
+    manterAcesa();
+  }
+
+  function sairDescanso(){
+    if (!descansando) return;
+    descansando = false;
+    $('descanso').classList.remove('acesa');
+    clearInterval(timerRelogio);
+    clearInterval(timerRecarga);
+    reiniciar();
+    manterAcesa();
+  }
+
+  function agendarDescanso(){
+    clearTimeout(timerDescanso);
+    if (PAINEL) return;
+    timerDescanso = setTimeout(entrarDescanso, TEMPO_DESCANSO);
+  }
+
+  /* ---------- navegação ---------- */
+  function mostrar(nome){
+    Object.keys(telas).forEach(function(k){ telas[k].classList.toggle('ativa', k === nome); });
+  }
+
+  function progresso(pct){ $('progresso').style.width = pct + '%'; }
+
+  function abrirResultados(){
+    clearInterval(timerObrigado);
+    clearTimeout(timerOcioso);
+    clearTimeout(timerDescanso);
+    progresso(100);
+    mostrar('resultados');
+    atualizarPainel();
+    clearInterval(timerAtualiza);
+    timerAtualiza = setInterval(atualizarPainel, INTERVALO_PAINEL);
+    if (!PAINEL){
+      clearTimeout(timerPainel);
+      timerPainel = setTimeout(reiniciar, TEMPO_PAINEL);
+    }
+  }
+
+  function montarPergunta(){
+    var p = PERGUNTAS[indice];
+    $('eyebrow').textContent = 'Pergunta ' + (indice + 1) + ' de ' + TOTAL;
+    $('tituloPergunta').textContent = p.titulo;
+    $('btnVoltar').hidden = indice === 0;
+
+    var caixa = $('opcoes');
+    caixa.innerHTML = '';
+    ESCALA.forEach(function(o){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opcao' + (respostas[p.chave] === o.texto ? ' escolhida' : '');
+      b.innerHTML = '<span class="rosto">' + o.rosto + '</span><span>' + o.texto + '</span>';
+      b.addEventListener('click', function(){
+        Array.prototype.forEach.call(caixa.children, function(c){ c.classList.remove('escolhida'); });
+        b.classList.add('escolhida');
+        respostas[p.chave] = o.texto;
+        setTimeout(avancar, 260);
+      });
+      caixa.appendChild(b);
+    });
+
+    progresso(Math.round((indice / TOTAL) * 100));
+    mostrar('pergunta');
+  }
+
+  function abrirComentario(){
+    $('eyebrowComentario').textContent = 'Pergunta ' + TOTAL + ' de ' + TOTAL;
+    progresso(Math.round((PERGUNTAS.length / TOTAL) * 100));
+    mostrar('comentario');
+    atualizarContador();
+    clearTimeout(timerOcioso);
+    timerOcioso = setTimeout(reiniciar, TEMPO_COMENTARIO);
+  }
+
+  function atualizarContador(){
+    var t = $('comentario').value || '';
+    $('contador').textContent = t.length + ' / 600';
+  }
+
+  function avancar(){
+    if (indice < PERGUNTAS.length - 1){ indice++; montarPergunta(); }
+    else { abrirComentario(); }
+  }
+
+  function voltar(){
+    if (indice > 0){ indice--; montarPergunta(); }
+  }
+
+  function reiniciar(){
+    respostas = {};
+    indice = 0;
+    enviando = false;
+    if ($('comentario')) $('comentario').value = '';
+    progresso(0);
+    clearTimeout(timerOcioso);
+    clearTimeout(timerPainel);
+    clearInterval(timerAtualiza);
+    if (PAINEL){ abrirResultados(); return; }
+    mostrar('inicio');
+    agendarDescanso();
+  }
+
+  /* ---------- envio ---------- */
+  var MODO = 'cors';
+
+  function corpoForm(dados){
+    var corpo = new URLSearchParams();
+    Object.keys(dados).forEach(function(k){ corpo.append(k, dados[k]); });
+    return corpo;
+  }
+
+  function postar(dados){
+    if (MODO === 'cors'){
+      return fetch(WEBHOOK_URL, { method:'POST', mode:'cors', body: corpoForm(dados), cache:'no-store' })
+        .then(function(r){
+          if (!r.ok) throw new Error('n8n respondeu ' + r.status);
+          log('Enviado e confirmado (' + r.status + ').');
+          return r;
+        })
+        ['catch'](function(err){
+          if (String(err).indexOf('n8n respondeu') !== -1) throw err;
+          MODO = 'no-cors';
+          log('Resposta não legível (CORS) — enviando às cegas.');
+          return postar(dados);
+        });
+    }
+    return fetch(WEBHOOK_URL, { method:'POST', mode:'no-cors', body: corpoForm(dados), cache:'no-store' });
+  }
+
+  function enviar(){
+    if (enviando) return;
+
+    var faltando = PERGUNTAS.some(function(p){ return !respostas[p.chave]; });
+    if (faltando){ indice = 0; montarPergunta(); return; }
+
+    enviando = true;
+
+    var dados = {
+      checkin: respostas.checkin,
+      limpeza: respostas.limpeza,
+      indicaria: respostas.indicaria,
+      wifi: respostas.wifi,
+      experiencia: respostas.experiencia,
+      comentario: (($('comentario') || {}).value || '').trim().slice(0, 600)
+    };
+
+    desenharMini(somarLocal(dados));
+
+    postar(dados)['catch'](function(err){
+      log('Falha de rede: ' + err + ' — guardado para reenvio.');
+      var lista = lerFila();
+      lista.push(dados);
+      gravarFila(lista);
+    }).then(agradecer, agradecer);
+  }
+
+  function tentarFila(){
+    var lista = lerFila();
+    if (!lista.length || navigator.onLine === false) return;
+    postar(lista[0]).then(function(){
+      var atual = lerFila();
+      atual.shift();
+      gravarFila(atual);
+      if (atual.length) tentarFila();
+    })['catch'](function(){});
+  }
+
+  function agradecer(){
+    progresso(100);
+    mostrar('obrigado');
+    clearTimeout(timerOcioso);
+    clearTimeout(timerDescanso);
+    atualizarPainel();
+
+    var restante = Math.round(TEMPO_OBRIGADO / 1000);
+    $('contagem').textContent = 'Voltando em ' + restante + 's';
+    clearInterval(timerObrigado);
+    timerObrigado = setInterval(function(){
+      restante--;
+      $('contagem').textContent = 'Voltando em ' + restante + 's';
+      if (restante <= 0){ clearInterval(timerObrigado); reiniciar(); }
+    }, 1000);
+  }
+
+  /* qualquer toque: acorda do descanso ou reinicia a contagem ociosa */
+  function marcarAtividade(){
+    if (descansando){ sairDescanso(); return; }
+
+    if (telas.inicio.classList.contains('ativa')){ agendarDescanso(); return; }
+    if (telas.obrigado.classList.contains('ativa')) return;
+
+    if (telas.resultados.classList.contains('ativa')){
+      if (PAINEL) return;
+      clearTimeout(timerPainel);
+      timerPainel = setTimeout(reiniciar, TEMPO_PAINEL);
+      return;
+    }
+
+    if (telas.comentario.classList.contains('ativa')){
+      clearTimeout(timerOcioso);
+      timerOcioso = setTimeout(reiniciar, TEMPO_COMENTARIO);
+      return;
+    }
+
+    clearTimeout(timerOcioso);
+    timerOcioso = setTimeout(reiniciar, TEMPO_OCIOSO);
+  }
+
+  var wakeLock = null;
+  function manterAcesa(){
+    if (!('wakeLock' in navigator) || wakeLock) return;
+    navigator.wakeLock.request('screen').then(function(w){
+      wakeLock = w;
+      w.addEventListener('release', function(){ wakeLock = null; });
+    })['catch'](function(){});
+  }
+
+  /* ---------- partida ---------- */
+  document.documentElement.classList.add('hcp-trava');
+  document.body.classList.add('hcp-trava');
+
+  liga('btnComecar', function(){ indice = 0; clearTimeout(timerDescanso); montarPergunta(); manterAcesa(); });
+  liga('btnVoltar', voltar);
+  liga('btnVerResultados', abrirResultados);
+  liga('btnVerResultados2', abrirResultados);
+  liga('btnFecharResultados', reiniciar);
+  liga('btnVoltarComentario', function(){ indice = PERGUNTAS.length - 1; montarPergunta(); });
+  liga('btnPular', function(){ $('comentario').value = ''; enviar(); });
+  liga('btnEnviar', enviar);
+
+  if ($('comentario')){
+    $('comentario').addEventListener('input', atualizarContador);
+  }
+
+  /* o toque é capturado pela camada invisível: eventos dentro do iframe
+     não chegam a esta página, então a camada precisa ficar por cima dele */
+  $('captura').addEventListener('click', sairDescanso);
+  $('captura').addEventListener('touchstart', sairDescanso, { passive:true });
+
+  ['touchstart','click','keydown'].forEach(function(ev){
+    document.addEventListener(ev, marcarAtividade, { passive:true });
+  });
+
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('dblclick', function(e){ e.preventDefault(); });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'visible'){ manterAcesa(); tentarFila(); }
+  });
+
+  window.addEventListener('online', tentarFila);
+
+  carregarPainel();
+  fila = lerFila();
+  pintarPendentes();
+  tentarFila();
+  setInterval(tentarFila, 30000);
+  progresso(0);
+  atualizarPainel();
+  manterAcesa();
+  agendarDescanso();
+
+  if (PAINEL){ abrirResultados(); }
+  if (DEBUG) log('Diagnóstico ativo. Destino: ' + WEBHOOK_URL);
+})();
+</script>
+
+</body>
+</html>

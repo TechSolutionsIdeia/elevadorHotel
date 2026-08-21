@@ -352,7 +352,38 @@ const CONFIG = {
 
 /* Agenda de reserva — cada item aceita "imagem"; sem ela, entra a padrão */
 const AGENDA_RESERVA = [
-    { titulo:"Campo Mourão no Prato",                inicio:"2026-08-18", fim:"2026-09-01", local:"93 Estabelecimentos da cidade com pratos especiais" },
+    { titulo:"Cinemaxs",
+      quando:"Confira horários e ingressos",
+      inicio:"2026-08-01", fim:"2026-12-31",
+      local:"Shopping Família — Campo Mourão · PR",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1-copiar-4.jpg.jpeg" },
+
+    { titulo:"Caminho de Santiago",
+      quando:"Consulte as datas e rotas",
+      inicio:"2026-08-01", fim:"2026-12-31",
+      local:"Campo Mourão, Corumbataí do Sul, Barbosa Ferraz e Fênix",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1-copiar-3.jpg.jpeg" },
+
+    { titulo:"Campo Mourão no Prato",
+      inicio:"2026-08-17", fim:"2026-08-31",
+      local:"93 estabelecimentos da cidade com pratos especiais",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1.jpg.jpeg" },
+
+    { titulo:"Festa Ucraniana",
+      inicio:"2026-09-12", fim:"2026-09-13",
+      local:"Paróquia Imaculado Coração de Maria — Irati · PR",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1-copiar-2.jpg.jpeg" },
+
+    { titulo:"14º Festival de Rock",
+      quando:"19 de setembro",
+      inicio:"2026-09-19", fim:"2026-09-19",
+      local:"Mourão Garden — Campo Mourão · PR",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1-copiar.jpg.jpeg" },
+
+    { titulo:"Feira de Profissões",
+      inicio:"2026-09-25T08:00:00-03:00", fim:"2026-09-25T22:00:00-03:00",
+      local:"Integrado — Campo Mourão · PR",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/08/Prancheta-1-copiar-5.jpg.jpeg" },
 ];
 
 /* ================================================================
@@ -568,7 +599,7 @@ function mostrarSlide(){
   img.src = e.imagem;
   img.alt = e.titulo;
 
-  $("evtQuando").textContent = quandoTexto(e);
+  $("evtQuando").textContent = e.quando || quandoTexto(e);
   $("evtTitulo").textContent = e.titulo;
   $("evtOnde").textContent   = e.local || "";
 
