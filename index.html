@@ -98,7 +98,9 @@ body[data-tipo="relogio"] .data{opacity:0}
 @keyframes encher{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
 /* ---------- Palco: uma tela por vez ---------- */
-.palco{position:relative;min-height:0}
+/* --lado: 1 quando avança (entra pela direita), -1 quando volta (entra pela esquerda) */
+.palco{position:relative;min-height:0;--lado:1;touch-action:none;cursor:grab}
+.palco:active{cursor:grabbing}
 .slide{
   position:absolute;inset:0;
   background:var(--papel);
@@ -106,12 +108,13 @@ body[data-tipo="relogio"] .data{opacity:0}
   box-shadow:0 calc(var(--u)*.4) calc(var(--u)*1.6) rgba(60,38,0,.20);
   padding:calc(var(--u) * 4) calc(var(--u) * 5);
   display:flex;flex-direction:column;overflow:hidden;
-  opacity:0;transform:translateX(7%);
+  opacity:0;transform:translateX(calc(7% * var(--lado)));
   transition:opacity var(--troca) ease, transform var(--troca) cubic-bezier(.22,.7,.3,1);
   pointer-events:none;
 }
 .slide.ativo{opacity:1;transform:none}
-.slide.saiu{opacity:0;transform:translateX(-7%)}
+.slide.saiu{opacity:0;transform:translateX(calc(-7% * var(--lado)))}
+.slide img{-webkit-user-drag:none}
 
 .rotulo{
   font-size:calc(var(--u) * 2);font-weight:700;
@@ -240,6 +243,10 @@ body[data-tipo="relogio"] .data{opacity:0}
   letter-spacing:.12em;text-transform:uppercase;
   font-size:calc(var(--u) * 1.3);color:rgba(255,255,255,.72);white-space:nowrap;
 }
+.dica{
+  font-size:calc(var(--u) * 1.3);letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.72);white-space:nowrap;margin-left:auto;
+}
 .ponto{width:calc(var(--u) * .9);height:calc(var(--u) * .9);border-radius:50%;background:#8CE0AE}
 .ponto.demo{background:var(--latao-claro)}
 .ponto.off{background:#F0A48C}
@@ -328,6 +335,7 @@ body[data-tipo="relogio"] .data{opacity:0}
 
   <footer class="rodape">
     <div class="recado" id="recado">Café da manhã das 6h30 às 10h, no térreo.</div>
+    <div class="dica">‹ Deslize para navegar ›</div>
     <div class="estado"><span class="ponto" id="ponto"></span><span id="estadoTxt">Ao vivo</span></div>
   </footer>
 
@@ -357,7 +365,7 @@ body[data-tipo="relogio"] .data{opacity:0}
 <template id="modeloEvento">
   <section class="slide s-evento dinamico" data-tipo="evento">
     <div class="evento">
-      <div class="cartaz"><img alt=""></div>
+      <div class="cartaz"><img alt="" draggable="false"></div>
       <div class="evt-texto">
         <div class="rotulo entra">Acontece na cidade</div>
         <div class="entra" style="display:flex;flex-direction:column;gap:calc(var(--u) * 1.4)">
@@ -411,6 +419,9 @@ const CONFIG = {
   // Segundos que cada tipo de tela fica no ar
   duracao: { relogio: 8, moeda: 7, clima: 9, evento: 12 },
 
+  // Depois que o hóspede desliza ou toca, a tela escolhida fica no ar por este tempo
+  pausaAposToque: 25,
+
   atualizarClima: 10 * 60 * 1000,
   atualizarCambio: 5 * 60 * 1000,
   atualizarAgenda: 60 * 60 * 1000
@@ -457,7 +468,7 @@ const AGENDA_RESERVA = [
    ================================================================ */
 const estado = {
   agenda: [], demo: false, falhas: 0,
-  slides: [], atual: -1, elAtual: null, voltas: 0,
+  slides: [], atual: -1, elAtual: null, timer: null,
   agendaNova: false
 };
 const $ = id => document.getElementById(id);
@@ -721,37 +732,108 @@ function pintarRegua(dur){
   ).join("");
 }
 
-function avancar(){
-  const reconstruir = estado.agendaNova;
-  const proximo = estado.atual + 1;
+/* Vai para a tela "indice". dir = 1 avança, -1 volta.
+   "segundos" substitui a duração normal (usado depois de um toque). */
+function irPara(indice, dir = 1, segundos){
+  clearTimeout(estado.timer);
 
-  // só refaz a sequência no fim da volta, para a régua não pular no meio
-  if(reconstruir && (proximo >= estado.slides.length || estado.atual < 0)) montarSequencia();
+  // só refaz a sequência ao virar a volta, para a régua não pular no meio
+  const virou = estado.atual < 0 || indice >= estado.slides.length || indice < 0;
+  if(estado.agendaNova && virou) montarSequencia();
 
-  estado.atual = proximo >= estado.slides.length ? 0 : proximo;
-  if(estado.atual === 0) estado.voltas++;
+  const total = estado.slides.length;
+  estado.atual = ((indice % total) + total) % total;
 
   const el = estado.slides[estado.atual];
   const anterior = estado.elAtual;
+  $("palco").style.setProperty("--lado", dir);
 
-  estado.slides.forEach(s => { if(s !== anterior) s.classList.remove("saiu", "ativo"); });
+  estado.slides.forEach(s => { if(s !== anterior && s !== el) s.classList.remove("saiu", "ativo"); });
+
   if(anterior && anterior !== el){
+    anterior.style.transition = "";
+    anterior.style.transform = "";     // sai a partir de onde o dedo largou
     anterior.classList.remove("ativo");
     anterior.classList.add("saiu");
   }
-  el.classList.remove("saiu");
-  void el.offsetWidth;               // reinicia as animações de entrada
+
+  // posiciona a tela nova do lado certo antes de animar a entrada
+  el.style.transition = "none";
+  el.style.transform = "";
+  el.classList.remove("saiu", "ativo");
+  void el.offsetWidth;
+  el.style.transition = "";
   el.classList.add("ativo");
   estado.elAtual = el;
 
   const tipo = el.dataset.tipo;
   document.body.dataset.tipo = tipo;
-  const dur = CONFIG.duracao[tipo] || 10;
+  const dur = segundos || CONFIG.duracao[tipo] || 10;
   pintarRegua(dur);
 
   $("recado").textContent = CONFIG.recados[estado.atual % CONFIG.recados.length];
 
-  setTimeout(avancar, dur * 1000);
+  estado.timer = setTimeout(() => irPara(estado.atual + 1, 1), dur * 1000);
+}
+
+/* ================================================================
+   7b. TOQUE — deslizar para os lados, tocar nas bordas, setas do teclado
+   ================================================================ */
+function ativarToque(){
+  const palco = $("palco");
+  let gesto = null;
+
+  palco.addEventListener("pointerdown", e => {
+    if(e.pointerType === "mouse" && e.button !== 0) return;
+    if(!estado.elAtual) return;
+    clearTimeout(estado.timer);      // não troca sozinho com o dedo na tela
+    gesto = { id:e.pointerId, x:e.clientX, y:e.clientY, t:performance.now(), dx:0 };
+    try{ palco.setPointerCapture(e.pointerId); }catch(_){ /* segue sem captura */ }
+    estado.elAtual.style.transition = "none";
+  });
+
+  palco.addEventListener("pointermove", e => {
+    if(!gesto || e.pointerId !== gesto.id) return;
+    gesto.dx = e.clientX - gesto.x;
+    estado.elAtual.style.transform = `translateX(${gesto.dx}px)`;
+  });
+
+  const soltar = e => {
+    if(!gesto || e.pointerId !== gesto.id) return;
+    const { dx, t } = gesto;
+    gesto = null;
+
+    const el = estado.elAtual;
+    const largura = palco.clientWidth;
+    const tempo = performance.now() - t;
+    const rapido = Math.abs(dx) > 30 && Math.abs(dx) / tempo > .5;
+    const pausa = CONFIG.pausaAposToque;
+
+    if(Math.abs(dx) > largura * .15 || rapido){
+      dx < 0 ? irPara(estado.atual + 1, 1, pausa) : irPara(estado.atual - 1, -1, pausa);
+      return;
+    }
+
+    // toque rápido sem arrastar: bordas trocam de tela
+    if(e.type === "pointerup" && Math.abs(dx) < 10 && tempo < 400){
+      const x = e.clientX - palco.getBoundingClientRect().left;
+      if(x > largura * .75){ irPara(estado.atual + 1,  1, pausa); return; }
+      if(x < largura * .25){ irPara(estado.atual - 1, -1, pausa); return; }
+    }
+
+    // não chegou a trocar: volta para o lugar e segura a tela um pouco mais
+    el.style.transition = "";
+    el.style.transform = "";
+    pintarRegua(pausa);
+    estado.timer = setTimeout(() => irPara(estado.atual + 1, 1), pausa * 1000);
+  };
+  palco.addEventListener("pointerup", soltar);
+  palco.addEventListener("pointercancel", soltar);
+
+  document.addEventListener("keydown", e => {
+    if(e.key === "ArrowRight") irPara(estado.atual + 1,  1, CONFIG.pausaAposToque);
+    if(e.key === "ArrowLeft")  irPara(estado.atual - 1, -1, CONFIG.pausaAposToque);
+  });
 }
 
 /* ================================================================
@@ -791,7 +873,8 @@ async function iniciar(){
     buscarAgenda()
   ]);
 
-  avancar();
+  irPara(0);
+  ativarToque();
 
   setInterval(() => tentar(buscarClima,  climaDemo),  CONFIG.atualizarClima);
   setInterval(() => tentar(buscarCambio, cambioDemo), CONFIG.atualizarCambio);
