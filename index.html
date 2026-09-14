@@ -31,6 +31,7 @@
   --u: 1vmin;
   --gap: calc(var(--u) * 2.2);
   --raio: calc(var(--u) * 1.4);
+  --troca: .8s;            /* duração da passagem entre telas */
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -52,18 +53,17 @@ body::before{
 
 .cabine{
   position:relative;z-index:1;height:100vh;height:100dvh;
-  display:grid;grid-template-rows:auto 1fr auto;
-  gap:var(--gap);
+  display:grid;grid-template-rows:auto auto 1fr auto;
+  gap:calc(var(--u) * 1.6);
   padding:calc(var(--u) * 3);
 }
 
 /* ---------- Cabeçalho ---------- */
 .topo{
   display:flex;align-items:baseline;justify-content:space-between;gap:var(--gap);
-  border-bottom:1px solid rgba(255,255,255,.28);
-  padding-bottom:calc(var(--u) * 1.6);
+  padding-bottom:calc(var(--u) * .4);
 }
-.marca{display:flex;align-items:baseline;gap:calc(var(--u) * 1.6)}
+.marca{display:flex;align-items:baseline;gap:calc(var(--u) * 1.6);min-width:0}
 .marca .selo{
   width:calc(var(--u) * 1.1);height:calc(var(--u) * 3.4);
   background:var(--branco);border-radius:2px;flex:none;align-self:center;
@@ -71,128 +71,159 @@ body::before{
 .marca h1{
   font-family:var(--serif);font-weight:400;
   font-size:calc(var(--u) * 4.2);letter-spacing:.005em;line-height:1;
-  color:var(--branco);
+  color:var(--branco);white-space:nowrap;
 }
 .marca .lugar{
   font-size:calc(var(--u) * 1.5);font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.72);
+  white-space:nowrap;
 }
 .data{
   font-size:calc(var(--u) * 2);font-weight:500;
-  color:var(--branco);letter-spacing:.04em;text-align:right;
+  color:var(--branco);letter-spacing:.04em;text-align:right;white-space:nowrap;
+  transition:opacity .4s;
 }
+.data b{font-weight:700;margin-left:calc(var(--u) * 1.2)}
+/* na tela do relógio a data/hora do topo seria repetida */
+body[data-tipo="relogio"] .data{opacity:0}
 
-/* ---------- Corpo ---------- */
-.corpo{
-  display:grid;grid-template-columns:30fr 70fr;
-  gap:var(--gap);min-height:0;
+/* ---------- Régua de progresso (um segmento por tela) ---------- */
+.regua{display:flex;gap:calc(var(--u) * .6);height:calc(var(--u) * .55)}
+.regua i{flex:1;background:rgba(255,255,255,.25);border-radius:9px;overflow:hidden;position:relative}
+.regua i.feito{background:rgba(255,255,255,.85)}
+.regua i.on b{
+  position:absolute;inset:0;background:var(--branco);transform-origin:left;
+  animation:encher var(--dur, 10s) linear both;
 }
-.coluna{display:grid;gap:var(--gap);min-height:0}
-/* esquerda: relógio, clima e câmbio empilhados */
-.esquerda{grid-template-rows:auto 1fr auto}
-/* direita: só o rodízio de eventos, ocupando tudo */
-.direita{grid-template-rows:1fr}
+@keyframes encher{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-.bloco{
+/* ---------- Palco: uma tela por vez ---------- */
+.palco{position:relative;min-height:0}
+.slide{
+  position:absolute;inset:0;
   background:var(--papel);
   border-radius:var(--raio);
   box-shadow:0 calc(var(--u)*.4) calc(var(--u)*1.6) rgba(60,38,0,.20);
-  padding:calc(var(--u) * 2.6) calc(var(--u) * 3);
-  min-height:0;display:flex;flex-direction:column;
-  position:relative;overflow:hidden;
+  padding:calc(var(--u) * 4) calc(var(--u) * 5);
+  display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;transform:translateX(7%);
+  transition:opacity var(--troca) ease, transform var(--troca) cubic-bezier(.22,.7,.3,1);
+  pointer-events:none;
 }
+.slide.ativo{opacity:1;transform:none}
+.slide.saiu{opacity:0;transform:translateX(-7%)}
+
 .rotulo{
-  font-size:calc(var(--u) * 1.45);font-weight:700;
+  font-size:calc(var(--u) * 2);font-weight:700;
   letter-spacing:.24em;text-transform:uppercase;
   color:var(--latao);
-  margin-bottom:calc(var(--u) * 1.6);
 }
+.miolo{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
 
-/* ---------- Relógio ---------- */
-.relogio{align-items:flex-start;justify-content:center}
-.hora{display:flex;align-items:baseline;gap:calc(var(--u) * 1.2);line-height:.82}
+/* ---------- Tela: relógio ---------- */
+.s-relogio .miolo{align-items:center;text-align:center}
+.hora{display:flex;align-items:baseline;gap:calc(var(--u) * 2);line-height:.8}
 .hora .hm{
-  font-size:calc(var(--u) * 11);font-weight:600;
-  letter-spacing:-.035em;font-variant-numeric:tabular-nums;
-  color:var(--tinta);
+  font-size:calc(var(--u) * 30);font-weight:600;
+  letter-spacing:-.04em;color:var(--tinta);
 }
-.hora .seg{font-size:calc(var(--u) * 3);font-weight:600;color:var(--latao);letter-spacing:.02em}
+.hora .seg{font-size:calc(var(--u) * 7);font-weight:600;color:var(--latao);letter-spacing:.02em}
+.relogio-data{
+  margin-top:calc(var(--u) * 3.5);
+  font-size:calc(var(--u) * 4.2);font-weight:600;color:var(--tinta);
+}
 .saudacao{
   margin-top:calc(var(--u) * 1.2);
   font-family:var(--serif);font-style:italic;
-  font-size:calc(var(--u) * 2.4);color:var(--tinta-fraca);
+  font-size:calc(var(--u) * 4.4);color:var(--tinta-fraca);
 }
 
-/* ---------- Clima ---------- */
-.clima-agora{display:flex;align-items:center;gap:calc(var(--u) * 1.8);flex-wrap:wrap}
-.clima-agora svg{width:calc(var(--u) * 6.5);height:calc(var(--u) * 6.5);flex:none}
-.temp{font-size:calc(var(--u) * 6.4);font-weight:600;letter-spacing:-.03em;line-height:.9;color:var(--tinta)}
-.temp sup{font-size:.42em;font-weight:500;vertical-align:super;margin-left:.06em}
-.clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * .4);min-width:0}
-.clima-desc{font-size:calc(var(--u) * 2);font-weight:600;line-height:1.15}
-.clima-max{font-size:calc(var(--u) * 1.5);color:var(--tinta-fraca)}
-
-/* quatro medidas em duas colunas: cabem sem espremer na faixa estreita */
-.clima-extra{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:calc(var(--u) * 1.4) calc(var(--u) * 2);
-  margin-top:auto;padding-top:calc(var(--u) * 1.8);
+/* ---------- Tela: moeda ---------- */
+.moeda-nome{
+  font-family:var(--serif);font-weight:600;
+  font-size:calc(var(--u) * 7);line-height:1.05;color:var(--tinta);
+  margin-top:calc(var(--u) * 1.4);
+}
+.moeda-par{
+  font-size:calc(var(--u) * 2.2);font-weight:600;letter-spacing:.2em;
+  color:var(--tinta-fraca);margin-top:calc(var(--u) * .8);
+}
+.moeda-valor{
+  display:flex;align-items:baseline;gap:calc(var(--u) * 2);flex-wrap:wrap;
+  line-height:.9;
+}
+.moeda-valor small{font-size:calc(var(--u) * 7);font-weight:600;color:var(--tinta-fraca)}
+.moeda-valor .num{font-size:calc(var(--u) * 24);font-weight:700;letter-spacing:-.04em;color:var(--tinta)}
+.moeda-var{
+  display:inline-block;margin-top:calc(var(--u) * 2.4);
+  font-size:calc(var(--u) * 4);font-weight:700;
+}
+.sobe{color:var(--alta)}
+.desce{color:var(--baixa)}
+.faixa{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:calc(var(--u) * 2) calc(var(--u) * 3);
+  padding-top:calc(var(--u) * 2.4);
   border-top:1px solid var(--linha);
 }
-.extra-item{display:flex;flex-direction:column;gap:calc(var(--u) * .3)}
-.extra-item b{font-size:calc(var(--u) * 2);font-weight:700;color:var(--tinta)}
-.extra-item span{
-  font-size:calc(var(--u) * 1.2);letter-spacing:.14em;
+.faixa.quatro{grid-template-columns:repeat(4,1fr)}
+.item{display:flex;flex-direction:column;gap:calc(var(--u) * .5)}
+.item b{font-size:calc(var(--u) * 4.4);font-weight:700;color:var(--tinta);line-height:1}
+.item span{
+  font-size:calc(var(--u) * 1.6);letter-spacing:.16em;
   text-transform:uppercase;color:var(--tinta-fraca);
 }
 
-/* ---------- Evento em rodízio ---------- */
-.rodizio{justify-content:flex-start;padding-top:calc(var(--u) * 2.6)}
-.regua{
-  position:absolute;top:0;left:0;right:0;height:calc(var(--u) * .5);
-  display:flex;gap:2px;
-}
-.regua i{flex:1;background:var(--linha);border-radius:1px;transition:background .35s}
-.regua i.on{background:var(--latao)}
+/* ---------- Tela: clima ---------- */
+.clima-agora{display:flex;align-items:center;gap:calc(var(--u) * 5);flex-wrap:wrap}
+.clima-agora svg{width:calc(var(--u) * 26);height:calc(var(--u) * 26);flex:none;display:block}
+.temp{font-size:calc(var(--u) * 26);font-weight:600;letter-spacing:-.04em;line-height:.85;color:var(--tinta)}
+.temp sup{font-size:.4em;font-weight:500;vertical-align:super;margin-left:.04em}
+.clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * 1.2);min-width:0}
+.clima-desc{font-family:var(--serif);font-weight:600;font-size:calc(var(--u) * 6.4);line-height:1.05}
+.clima-max{font-size:calc(var(--u) * 3.2);color:var(--tinta-fraca);font-weight:500}
 
-.evento{display:flex;flex-direction:column;height:100%;min-height:0;gap:calc(var(--u) * 1.6)}
+/* ---------- Tela: evento ---------- */
+.s-evento{padding:calc(var(--u) * 3)}
+.evento{
+  flex:1;min-height:0;
+  display:grid;grid-template-columns:1.15fr 1fr;gap:calc(var(--u) * 4);
+}
 .cartaz{
-  flex:1 1 auto;min-height:calc(var(--u) * 14);
-  background:var(--passepartout);
-  border-radius:calc(var(--raio) * .7);
-  overflow:hidden;
+  min-height:0;background:var(--passepartout);
+  border-radius:calc(var(--raio) * .7);overflow:hidden;
   display:flex;align-items:center;justify-content:center;
 }
 .cartaz img{width:100%;height:100%;object-fit:contain;display:block}
-.cartaz.vazio{display:none}
+.s-evento.sem-cartaz .evento{grid-template-columns:1fr}
+.s-evento.sem-cartaz .cartaz{display:none}
 
-.evt-texto{flex:0 0 auto;display:flex;flex-direction:column;gap:calc(var(--u) * .9)}
+.evt-texto{
+  display:flex;flex-direction:column;justify-content:center;
+  gap:calc(var(--u) * 2);min-width:0;padding-right:calc(var(--u) * 2);
+}
+.evt-texto .contagem{
+  font-size:calc(var(--u) * 1.7);font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--tinta-fraca);
+}
 .evt-texto .quando{
-  font-size:calc(var(--u) * 2);font-weight:700;
-  color:var(--latao);letter-spacing:.08em;text-transform:uppercase;
+  font-size:calc(var(--u) * 3.2);font-weight:700;
+  color:var(--latao);letter-spacing:.06em;text-transform:uppercase;line-height:1.2;
 }
 .evt-texto h2{
   font-family:var(--serif);font-weight:600;
-  font-size:calc(var(--u) * 4.6);line-height:1.05;color:var(--tinta);
+  font-size:calc(var(--u) * 8);line-height:1.02;color:var(--tinta);
+  overflow-wrap:anywhere;
 }
-.evt-texto .onde{font-size:calc(var(--u) * 2.2);color:var(--tinta-fraca);line-height:1.3}
+.evt-texto .onde{font-size:calc(var(--u) * 3.2);color:var(--tinta-fraca);line-height:1.3}
 
-.animar{animation:entra .55s cubic-bezier(.22,.7,.3,1) both}
-@keyframes entra{from{opacity:0;transform:translateY(calc(var(--u) * 1.4))}to{opacity:1;transform:none}}
-
-/* ---------- Câmbio ---------- */
-.cambio{gap:calc(var(--u) * 1);padding-top:calc(var(--u) * 2);padding-bottom:calc(var(--u) * 2)}
-.moeda{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:calc(var(--u) * 1)}
-.moeda .sigla{
-  font-size:calc(var(--u) * 1.35);font-weight:700;
-  letter-spacing:.14em;color:var(--tinta-fraca);width:calc(var(--u) * 4.6);
-}
-.moeda .valor{font-size:calc(var(--u) * 2.6);font-weight:700;letter-spacing:-.01em;color:var(--tinta)}
-.moeda .valor small{font-size:.5em;font-weight:500;color:var(--tinta-fraca);margin-right:.2em}
-.moeda .var{font-size:calc(var(--u) * 1.5);font-weight:700}
-.sobe{color:var(--alta)}
-.desce{color:var(--baixa)}
+/* entrada escalonada do conteúdo quando a tela chega */
+.slide .entra{opacity:0;transform:translateY(calc(var(--u) * 2))}
+.slide.ativo .entra{animation:sobe .7s cubic-bezier(.22,.7,.3,1) both}
+.slide.ativo .entra:nth-child(2){animation-delay:.12s}
+.slide.ativo .entra:nth-child(3){animation-delay:.24s}
+.slide.ativo .entra:nth-child(4){animation-delay:.36s}
+@keyframes sobe{to{opacity:1;transform:none}}
 
 /* ---------- Rodapé ---------- */
 .rodape{
@@ -216,21 +247,26 @@ body::before{
 /* ---------- Retrato ---------- */
 @media (max-aspect-ratio: 1/1){
   :root{--u:1.15vmin}
-  .corpo{grid-template-columns:1fr;grid-template-rows:auto 1.4fr auto auto}
-  .coluna{display:contents}
-  .relogio{order:1}
-  .rodizio{order:2;min-height:calc(var(--u) * 46)}
-  .esquerda .bloco:nth-child(2){order:3}
-  .cambio{order:4}
-  .hora .hm{font-size:calc(var(--u) * 13)}
-  .marca h1{font-size:calc(var(--u) * 3.6)}
-  .evt-texto h2{font-size:calc(var(--u) * 4)}
-  .cartaz{min-height:calc(var(--u) * 26)}
-  .clima-extra{grid-template-columns:repeat(4,1fr)}
+  .slide{padding:calc(var(--u) * 4)}
+  .marca .lugar{display:none}
+  .hora .hm{font-size:calc(var(--u) * 21)}
+  .hora .seg{font-size:calc(var(--u) * 5)}
+  .moeda-valor .num{font-size:calc(var(--u) * 17)}
+  .moeda-valor small{font-size:calc(var(--u) * 5)}
+  .clima-agora{gap:calc(var(--u) * 3)}
+  .clima-agora svg,.temp{width:auto}
+  .clima-agora svg{width:calc(var(--u) * 16);height:calc(var(--u) * 16)}
+  .temp{font-size:calc(var(--u) * 17)}
+  .faixa.quatro{grid-template-columns:1fr 1fr}
+  .evento{grid-template-columns:1fr;grid-template-rows:1.3fr auto;gap:calc(var(--u) * 2.4)}
+  .s-evento.sem-cartaz .evento{grid-template-rows:1fr}
+  .evt-texto{padding:0 calc(var(--u) * 1) calc(var(--u) * 1)}
+  .evt-texto h2{font-size:calc(var(--u) * 6)}
 }
 @media (prefers-reduced-motion: reduce){
-  .animar{animation:none}
-  .regua i{transition:none}
+  .slide{transition:opacity .3s;transform:none !important}
+  .slide.ativo .entra{animation:none;opacity:1;transform:none}
+  .regua i.on b{animation:none;transform:none}
 }
 </style>
 </head>
@@ -244,24 +280,32 @@ body::before{
       <h1 id="hotelNome">Hotel Campo Palace</h1>
       <div class="lugar" id="hotelLugar">Campo Mourão · PR</div>
     </div>
-    <div class="data" id="dataHoje">—</div>
+    <div class="data"><span id="dataHoje">—</span><b id="horaTopo">--:--</b></div>
   </header>
 
-  <main class="corpo">
+  <div class="regua" id="regua"></div>
 
-    <div class="coluna esquerda">
+  <main class="palco" id="palco">
 
-      <section class="bloco relogio">
-        <div class="hora">
+    <!-- Tela 1: horário -->
+    <section class="slide s-relogio" data-tipo="relogio" id="slideRelogio">
+      <div class="miolo">
+        <div class="hora entra">
           <span class="hm" id="horaMin">--:--</span>
           <span class="seg" id="segundos">--</span>
         </div>
-        <div class="saudacao" id="saudacao">Seja bem-vindo</div>
-      </section>
+        <div class="relogio-data entra" id="relogioData">—</div>
+        <div class="saudacao entra" id="saudacao">Seja bem-vindo</div>
+      </div>
+    </section>
 
-      <section class="bloco">
-        <div class="rotulo" id="rotuloClima">Agora em Campo Mourão</div>
-        <div class="clima-agora">
+    <!-- Telas de câmbio são criadas pelo script, uma por moeda -->
+
+    <!-- Tela: clima -->
+    <section class="slide s-clima" data-tipo="clima" id="slideClima">
+      <div class="rotulo" id="rotuloClima">Agora em Campo Mourão</div>
+      <div class="miolo">
+        <div class="clima-agora entra">
           <div id="climaIcone"></div>
           <div class="temp" id="climaTemp">--<sup>°</sup></div>
           <div class="clima-txt">
@@ -269,37 +313,16 @@ body::before{
             <div class="clima-max" id="climaMax">—</div>
           </div>
         </div>
-        <div class="clima-extra">
-          <div class="extra-item"><b id="climaSensacao">--°</b><span>Sensação</span></div>
-          <div class="extra-item"><b id="climaUmidade">--%</b><span>Umidade</span></div>
-          <div class="extra-item"><b id="climaVento">-- km/h</b><span>Vento</span></div>
-          <div class="extra-item"><b id="climaChuva">--%</b><span>Chuva hoje</span></div>
-        </div>
-      </section>
+      </div>
+      <div class="faixa quatro">
+        <div class="item"><b id="climaSensacao">--°</b><span>Sensação</span></div>
+        <div class="item"><b id="climaUmidade">--%</b><span>Umidade</span></div>
+        <div class="item"><b id="climaVento">-- km/h</b><span>Vento</span></div>
+        <div class="item"><b id="climaChuva">--%</b><span>Chuva hoje</span></div>
+      </div>
+    </section>
 
-      <section class="bloco cambio">
-        <div class="rotulo">Câmbio do dia</div>
-        <div id="listaMoedas"></div>
-      </section>
-
-    </div>
-
-    <div class="coluna direita">
-
-      <section class="bloco rodizio">
-        <div class="regua" id="regua"></div>
-        <div class="rotulo">Acontece na cidade</div>
-        <div class="evento" id="evento">
-          <div class="cartaz" id="cartaz"><img id="evtImagem" alt=""></div>
-          <div class="evt-texto">
-            <div class="quando" id="evtQuando">—</div>
-            <h2 id="evtTitulo">Carregando a agenda</h2>
-            <div class="onde" id="evtOnde">—</div>
-          </div>
-        </div>
-      </section>
-
-    </div>
+    <!-- Telas de evento são criadas pelo script, uma por evento -->
 
   </main>
 
@@ -309,6 +332,44 @@ body::before{
   </footer>
 
 </div>
+
+<template id="modeloMoeda">
+  <section class="slide s-moeda dinamico" data-tipo="moeda">
+    <div class="rotulo">Cotação do dia</div>
+    <div class="miolo">
+      <div class="entra">
+        <div class="moeda-nome" data-campo="nome">—</div>
+        <div class="moeda-par" data-campo="par">—</div>
+      </div>
+      <div class="entra" style="margin-top:calc(var(--u) * 4)">
+        <div class="moeda-valor"><small>R$</small><span class="num" data-campo="valor">--</span></div>
+        <div class="moeda-var" data-campo="var">—</div>
+      </div>
+    </div>
+    <div class="faixa">
+      <div class="item"><b data-campo="max">--</b><span>Máxima do dia</span></div>
+      <div class="item"><b data-campo="min">--</b><span>Mínima do dia</span></div>
+      <div class="item"><b data-campo="hora">--:--</b><span>Atualizado</span></div>
+    </div>
+  </section>
+</template>
+
+<template id="modeloEvento">
+  <section class="slide s-evento dinamico" data-tipo="evento">
+    <div class="evento">
+      <div class="cartaz"><img alt=""></div>
+      <div class="evt-texto">
+        <div class="rotulo entra">Acontece na cidade</div>
+        <div class="entra" style="display:flex;flex-direction:column;gap:calc(var(--u) * 1.4)">
+          <div class="quando" data-campo="quando">—</div>
+          <h2 data-campo="titulo">—</h2>
+        </div>
+        <div class="onde entra" data-campo="onde"></div>
+        <div class="contagem entra" data-campo="contagem"></div>
+      </div>
+    </div>
+  </section>
+</template>
 
 <script
   data-cfasync="false"
@@ -330,7 +391,9 @@ const CONFIG = {
   lon: -52.3783,
   fuso: "America/Sao_Paulo",
 
+  // Cada moeda vira uma tela própria, nesta ordem
   moedas: ["USD-BRL", "EUR-BRL", "ARS-BRL"],
+  nomesMoedas: { USD:"Dólar americano", EUR:"Euro", ARS:"Peso argentino", GBP:"Libra esterlina" },
 
   // Cartaz usado quando o evento não tiver imagem própria
   imagemPadrao: "",
@@ -343,8 +406,11 @@ const CONFIG = {
   ],
 
   agendaURL: null,      // ex.: "https://hotelcampopalace.com.br/agenda.json"
+  maxEventos: 6,
 
-  segundosPorSlide: 10,
+  // Segundos que cada tipo de tela fica no ar
+  duracao: { relogio: 8, moeda: 7, clima: 9, evento: 12 },
+
   atualizarClima: 10 * 60 * 1000,
   atualizarCambio: 5 * 60 * 1000,
   atualizarAgenda: 60 * 60 * 1000
@@ -389,13 +455,18 @@ const AGENDA_RESERVA = [
 /* ================================================================
    2. ESTADO
    ================================================================ */
-const estado = { agenda: [], slide: 0, demo: false, falhas: 0 };
+const estado = {
+  agenda: [], demo: false, falhas: 0,
+  slides: [], atual: -1, elAtual: null, voltas: 0,
+  agendaNova: false
+};
 const $ = id => document.getElementById(id);
 
 /* ================================================================
    3. RELÓGIO E DATA
    ================================================================ */
 const fmt = (opts) => new Intl.DateTimeFormat("pt-BR", { timeZone: CONFIG.fuso, ...opts });
+const maiuscula = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 function tique(){
   const agora = new Date();
@@ -405,9 +476,11 @@ function tique(){
   );
   $("horaMin").textContent = `${p.hour}:${p.minute}`;
   $("segundos").textContent = p.second;
+  $("horaTopo").textContent = `${p.hour}:${p.minute}`;
 
-  const data = fmt({ weekday:"long", day:"numeric", month:"long" }).format(agora);
-  $("dataHoje").textContent = data.charAt(0).toUpperCase() + data.slice(1);
+  const data = maiuscula(fmt({ weekday:"long", day:"numeric", month:"long" }).format(agora));
+  $("dataHoje").textContent = data;
+  $("relogioData").textContent = data;
 
   const h = +p.hour;
   $("saudacao").textContent =
@@ -479,17 +552,41 @@ function climaDemo(){
 }
 
 /* ================================================================
-   5. CÂMBIO — AwesomeAPI (sem chave)
+   5. CÂMBIO — AwesomeAPI (sem chave), uma tela por moeda
    ================================================================ */
-const dinheiro = v => Number(v).toLocaleString("pt-BR",{ minimumFractionDigits:2, maximumFractionDigits:2 });
+/* moedas baratas (ex.: peso argentino) precisam de mais casas para não virar "0,00" */
+const dinheiro = v => {
+  const n = Number(v), casas = n < 1 ? 4 : 2;
+  return n.toLocaleString("pt-BR",{ minimumFractionDigits:casas, maximumFractionDigits:casas });
+};
+const sigla = par => par.split("-")[0];
+
+function criarSlidesMoedas(){
+  const palco = $("palco"), clima = $("slideClima");
+  return CONFIG.moedas.map(par => {
+    const el = $("modeloMoeda").content.firstElementChild.cloneNode(true);
+    const s = sigla(par);
+    el.id = "moeda-" + s;
+    el.querySelector('[data-campo="nome"]').textContent = CONFIG.nomesMoedas[s] || s;
+    el.querySelector('[data-campo="par"]').textContent  = `1 ${s} em reais`;
+    palco.insertBefore(el, clima);
+    return el;
+  });
+}
 
 function pintarMoedas(linhas){
-  $("listaMoedas").innerHTML = linhas.map(m => `
-    <div class="moeda">
-      <span class="sigla">${m.sigla}</span>
-      <span class="valor"><small>R$</small>${m.valor}</span>
-      <span class="var ${m.pct >= 0 ? "sobe" : "desce"}">${m.pct >= 0 ? "▲" : "▼"} ${Math.abs(m.pct).toFixed(2)}%</span>
-    </div>`).join("");
+  linhas.forEach(m => {
+    const el = $("moeda-" + m.sigla);
+    if(!el) return;
+    const campo = n => el.querySelector(`[data-campo="${n}"]`);
+    campo("valor").textContent = dinheiro(m.valor);
+    const v = campo("var");
+    v.className = "moeda-var " + (m.pct >= 0 ? "sobe" : "desce");
+    v.textContent = `${m.pct >= 0 ? "▲" : "▼"} ${Math.abs(m.pct).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}% hoje`;
+    campo("max").textContent  = "R$ " + dinheiro(m.max);
+    campo("min").textContent  = "R$ " + dinheiro(m.min);
+    campo("hora").textContent = m.hora;
+  });
 }
 
 async function buscarCambio(){
@@ -499,15 +596,19 @@ async function buscarCambio(){
 
   pintarMoedas(CONFIG.moedas.map(par => {
     const m = d[par.replace("-","")];
-    return { sigla: m.code, valor: dinheiro(m.bid), pct: parseFloat(m.pctChange) };
+    return {
+      sigla: m.code, valor: m.bid, pct: parseFloat(m.pctChange),
+      max: m.high, min: m.low,
+      hora: (m.create_date || "").slice(11, 16) || "--:--"
+    };
   }));
 }
 
 function cambioDemo(){
   pintarMoedas([
-    { sigla:"USD", valor:"5,42", pct: 0.38 },
-    { sigla:"EUR", valor:"5,89", pct:-0.21 },
-    { sigla:"ARS", valor:"0,0041", pct: 0.07 }
+    { sigla:"USD", valor:5.42,   pct: 0.38, max:5.45,   min:5.39,   hora:"10:30" },
+    { sigla:"EUR", valor:5.89,   pct:-0.21, max:5.93,   min:5.87,   hora:"10:30" },
+    { sigla:"ARS", valor:0.0041, pct: 0.07, max:0.0042, min:0.0040, hora:"10:30" }
   ]);
 }
 
@@ -515,13 +616,15 @@ function cambioDemo(){
    6. AGENDA DA CIDADE
    ================================================================ */
 async function buscarAgenda(){
+  let lista = AGENDA_RESERVA;
   if(CONFIG.agendaURL){
     try{
       const r = await fetch(CONFIG.agendaURL, { cache:"no-store" });
-      if(r.ok){ estado.agenda = prepararAgenda(await r.json()); precarregar(); return; }
+      if(r.ok) lista = await r.json();
     }catch(e){ /* cai na reserva */ }
   }
-  estado.agenda = prepararAgenda(AGENDA_RESERVA);
+  estado.agenda = prepararAgenda(lista);
+  estado.agendaNova = true;   // as telas de evento são refeitas na próxima troca
   precarregar();
 }
 
@@ -530,13 +633,13 @@ function prepararAgenda(lista){
   return lista
     .filter(e => new Date(e.fim || e.inicio).getTime() >= agora - 6*3600*1000)
     .sort((a,b) => new Date(a.inicio) - new Date(b.inicio))
-    .slice(0, 6)
+    .slice(0, CONFIG.maxEventos)
     .map(e => ({ ...e, imagem: e.imagem || CONFIG.imagemPadrao }));
 }
 
 /* carrega os cartazes fora da tela para a troca não piscar */
 function precarregar(){
-  estado.agenda.forEach(e => { const i = new Image(); i.src = e.imagem; });
+  estado.agenda.forEach(e => { if(e.imagem){ const i = new Image(); i.src = e.imagem; } });
 }
 
 /* Para eventos de um dia só, mostra "Hoje · 21:00" / "Amanhã · 21:00" / "Segunda-feira, 17 de agosto · 21:00".
@@ -566,48 +669,90 @@ function quandoTexto(e){
 
   if(dia === hoje) return `Hoje · ${hora}`;
   if(ehAmanha)     return `Amanhã · ${hora}`;
-  const rotulo = fmt({ weekday:"long", day:"numeric", month:"long" }).format(ini);
-  return rotulo.charAt(0).toUpperCase() + rotulo.slice(1) + ` · ${hora}`;
+  return maiuscula(fmt({ weekday:"long", day:"numeric", month:"long" }).format(ini)) + ` · ${hora}`;
+}
+
+function criarSlidesEventos(){
+  const palco = $("palco"), total = estado.agenda.length;
+  return estado.agenda.map((e, i) => {
+    const el = $("modeloEvento").content.firstElementChild.cloneNode(true);
+    const campo = n => el.querySelector(`[data-campo="${n}"]`);
+    const img = el.querySelector("img");
+
+    if(e.imagem){
+      img.onerror = () => el.classList.add("sem-cartaz");   // sem cartaz, o texto ocupa a tela
+      img.src = e.imagem;
+      img.alt = e.titulo;
+    } else {
+      el.classList.add("sem-cartaz");
+    }
+
+    campo("quando").textContent   = e.quando || quandoTexto(e);
+    campo("titulo").textContent   = e.titulo;
+    campo("onde").textContent     = e.local || "";
+    campo("contagem").textContent = total > 1 ? `Evento ${i + 1} de ${total}` : "";
+
+    palco.appendChild(el);
+    return el;
+  });
 }
 
 /* ================================================================
-   7. RODÍZIO
+   7. CARROSSEL — horário → câmbio → clima → eventos → (repete)
    ================================================================ */
-function montarRegua(){
-  const n = Math.max(estado.agenda.length, 1);
-  $("regua").innerHTML = Array.from({length:n}, () => "<i></i>").join("");
-}
+let slidesMoedas = [], slidesEventos = [];
 
-function mostrarSlide(){
-  const lista = estado.agenda;
-
-  if(!lista.length){
-    $("cartaz").classList.add("vazio");
-    $("evtQuando").textContent = "";
-    $("evtTitulo").textContent = "Agenda em atualização";
-    $("evtOnde").textContent   = "Consulte a recepção para dicas na cidade.";
-    return;
+function montarSequencia(){
+  if(estado.agendaNova){
+    const velhos = slidesEventos;
+    slidesEventos = criarSlidesEventos();
+    estado.agendaNova = false;
+    // os antigos saem de cena depois que a transição termina
+    setTimeout(() => velhos.forEach(n => n.remove()), 1200);
   }
-
-  const e = lista[estado.slide % lista.length];
-  const alvo = $("evento");
-  alvo.classList.remove("animar"); void alvo.offsetWidth; alvo.classList.add("animar");
-
-  const img = $("evtImagem");
-  $("cartaz").classList.remove("vazio");
-  img.onerror = () => $("cartaz").classList.add("vazio");   // sem cartaz, o texto ocupa o card
-  img.src = e.imagem;
-  img.alt = e.titulo;
-
-  $("evtQuando").textContent = e.quando || quandoTexto(e);
-  $("evtTitulo").textContent = e.titulo;
-  $("evtOnde").textContent   = e.local || "";
-
-  [...$("regua").children].forEach((b,i) => b.classList.toggle("on", i === estado.slide % lista.length));
-  $("recado").textContent = CONFIG.recados[estado.slide % CONFIG.recados.length];
+  estado.slides = [$("slideRelogio"), ...slidesMoedas, $("slideClima"), ...slidesEventos];
 }
 
-function girar(){ estado.slide++; mostrarSlide(); }
+function pintarRegua(dur){
+  $("regua").innerHTML = estado.slides.map((_, i) =>
+    i < estado.atual  ? '<i class="feito"></i>' :
+    i === estado.atual ? `<i class="on" style="--dur:${dur}s"><b></b></i>` :
+                         "<i></i>"
+  ).join("");
+}
+
+function avancar(){
+  const reconstruir = estado.agendaNova;
+  const proximo = estado.atual + 1;
+
+  // só refaz a sequência no fim da volta, para a régua não pular no meio
+  if(reconstruir && (proximo >= estado.slides.length || estado.atual < 0)) montarSequencia();
+
+  estado.atual = proximo >= estado.slides.length ? 0 : proximo;
+  if(estado.atual === 0) estado.voltas++;
+
+  const el = estado.slides[estado.atual];
+  const anterior = estado.elAtual;
+
+  estado.slides.forEach(s => { if(s !== anterior) s.classList.remove("saiu", "ativo"); });
+  if(anterior && anterior !== el){
+    anterior.classList.remove("ativo");
+    anterior.classList.add("saiu");
+  }
+  el.classList.remove("saiu");
+  void el.offsetWidth;               // reinicia as animações de entrada
+  el.classList.add("ativo");
+  estado.elAtual = el;
+
+  const tipo = el.dataset.tipo;
+  document.body.dataset.tipo = tipo;
+  const dur = CONFIG.duracao[tipo] || 10;
+  pintarRegua(dur);
+
+  $("recado").textContent = CONFIG.recados[estado.atual % CONFIG.recados.length];
+
+  setTimeout(avancar, dur * 1000);
+}
 
 /* ================================================================
    8. ESTADO DA CONEXÃO
@@ -635,17 +780,22 @@ async function iniciar(){
   tique();
   setInterval(tique, 1000);
 
-  await tentar(buscarClima,  climaDemo);
-  await tentar(buscarCambio, cambioDemo);
-  await buscarAgenda();
+  slidesMoedas = criarSlidesMoedas();
 
-  montarRegua();
-  mostrarSlide();
-  setInterval(girar, CONFIG.segundosPorSlide * 1000);
+  // o relógio já entra no ar enquanto os dados carregam
+  estado.slides = [$("slideRelogio"), ...slidesMoedas, $("slideClima")];
+
+  await Promise.all([
+    tentar(buscarClima,  climaDemo),
+    tentar(buscarCambio, cambioDemo),
+    buscarAgenda()
+  ]);
+
+  avancar();
 
   setInterval(() => tentar(buscarClima,  climaDemo),  CONFIG.atualizarClima);
   setInterval(() => tentar(buscarCambio, cambioDemo), CONFIG.atualizarCambio);
-  setInterval(async () => { await buscarAgenda(); montarRegua(); }, CONFIG.atualizarAgenda);
+  setInterval(buscarAgenda, CONFIG.atualizarAgenda);
 
   // Dentro de um iframe, quem cuida da tela acesa e do recarregamento é a
   // página que hospeda o painel. Solto na TV, o painel cuida de si mesmo.
