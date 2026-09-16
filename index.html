@@ -4,9 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Painel do elevador · Hotel Campo Palace</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    TOKENS — ouro Campo Palace sobre painéis de papel creme
@@ -25,8 +22,8 @@
   --alta:#2F7D51;
   --baixa:#B8452A;
 
-  --serif:"Bodoni Moda", Georgia, "Times New Roman", serif;
-  --sans:"Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif:Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
+  --sans:"Myriad Variable Concept", "myriad-variable-concept", "Myriad Pro", Myriad, "Segoe UI", system-ui, sans-serif;
 
   --u: 1vmin;
   --gap: calc(var(--u) * 2.2);
@@ -137,13 +134,13 @@ body[data-tipo="relogio"] .data{opacity:0}
 }
 .saudacao{
   margin-top:calc(var(--u) * 1.2);
-  font-family:var(--serif);font-style:italic;
+  font-family:var(--sans);font-style:italic;
   font-size:calc(var(--u) * 4.4);color:var(--tinta-fraca);
 }
 
 /* ---------- Tela: moeda ---------- */
 .moeda-nome{
-  font-family:var(--serif);font-weight:600;
+  font-family:var(--serif);font-weight:400;
   font-size:calc(var(--u) * 7);line-height:1.05;color:var(--tinta);
   margin-top:calc(var(--u) * 1.4);
 }
@@ -183,7 +180,7 @@ body[data-tipo="relogio"] .data{opacity:0}
 .temp{font-size:calc(var(--u) * 26);font-weight:600;letter-spacing:-.04em;line-height:.85;color:var(--tinta)}
 .temp sup{font-size:.4em;font-weight:500;vertical-align:super;margin-left:.04em}
 .clima-txt{display:flex;flex-direction:column;gap:calc(var(--u) * 1.2);min-width:0}
-.clima-desc{font-family:var(--serif);font-weight:600;font-size:calc(var(--u) * 6.4);line-height:1.05}
+.clima-desc{font-family:var(--serif);font-weight:400;font-size:calc(var(--u) * 6.4);line-height:1.05}
 .clima-max{font-size:calc(var(--u) * 3.2);color:var(--tinta-fraca);font-weight:500}
 
 /* ---------- Tela: evento ---------- */
@@ -214,7 +211,7 @@ body[data-tipo="relogio"] .data{opacity:0}
   color:var(--latao);letter-spacing:.06em;text-transform:uppercase;line-height:1.2;
 }
 .evt-texto h2{
-  font-family:var(--serif);font-weight:600;
+  font-family:var(--serif);font-weight:400;
   font-size:calc(var(--u) * 8);line-height:1.02;color:var(--tinta);
   overflow-wrap:anywhere;
 }
@@ -235,7 +232,7 @@ body[data-tipo="relogio"] .data{opacity:0}
   padding-top:calc(var(--u) * 1.6);
 }
 .recado{
-  font-family:var(--serif);font-style:italic;
+  font-family:var(--sans);font-style:italic;
   font-size:calc(var(--u) * 2.2);color:var(--branco);
 }
 .estado{
@@ -335,8 +332,6 @@ body[data-tipo="relogio"] .data{opacity:0}
 
   <footer class="rodape">
     <div class="recado" id="recado">Café da manhã das 6h30 às 10h, no térreo.</div>
-    <div class="dica">‹ Deslize para navegar ›</div>
-    <div class="estado"><span class="ponto" id="ponto"></span><span id="estadoTxt">Ao vivo</span></div>
   </footer>
 
 </div>
