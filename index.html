@@ -836,6 +836,7 @@ function ativarToque(){
    ================================================================ */
 function marcarEstado(){
   const p = $("ponto"), t = $("estadoTxt");
+  if(!p || !t) return;
   p.className = "ponto" + (estado.demo ? " demo" : estado.falhas ? " off" : "");
   t.textContent = estado.demo ? "Modo demonstração" : estado.falhas ? "Reconectando" : "Ao vivo";
 }
