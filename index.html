@@ -190,7 +190,7 @@ body[data-tipo="relogio"] .data{opacity:0}
   display:grid;grid-template-columns:1.15fr 1fr;gap:calc(var(--u) * 4);
 }
 .cartaz{
-  min-height:0;background:var(--passepartout);
+  min-height:0;background:var(--papel);
   border-radius:calc(var(--raio) * .7);overflow:hidden;
   display:flex;align-items:center;justify-content:center;
 }
@@ -424,6 +424,13 @@ const CONFIG = {
 
 /* Agenda de reserva — cada item aceita "imagem"; sem ela, entra a padrão */
 const AGENDA_RESERVA = [
+
+
+    { titulo:"Show Carol Biazin",
+      inicio:"2026-10-11T21:00:00-03:00", fim:"2026-10-11T22:00:00-03:00",
+      local:"Praça São José — Campo Mourão · PR",
+      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/10/WhatsApp-Image-2026-03-24-at-09.10.26-2.jpeg" },
+
     { titulo:"Cinemaxs",
       quando:"Confira horários e ingressos",
       inicio:"2026-08-01", fim:"2026-12-31",
