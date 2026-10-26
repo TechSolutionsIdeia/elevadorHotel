@@ -184,46 +184,50 @@ body[data-tipo="relogio"] .data{opacity:0}
 .clima-max{font-size:calc(var(--u) * 3.2);color:var(--tinta-fraca);font-weight:500}
 
 /* ---------- Tela: evento ---------- */
-.s-evento{padding:calc(var(--u) * 3)}
+.s-evento{
+  padding:calc(var(--u) * 2);
+}
+
 .evento{
-  flex:1;min-height:0;
-  display:grid;grid-template-columns:1.15fr 1fr;gap:calc(var(--u) * 4);
+  flex:1;
+  min-height:0;
+  display:flex;
+  width:100%;
+  height:100%;
 }
+
 .cartaz{
-  min-height:0;background:var(--papel);
-  border-radius:calc(var(--raio) * .7);overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
+  width:100%;
+  height:100%;
+  min-height:0;
+  background:var(--papel);
+  border-radius:calc(var(--raio) * .7);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.cartaz img{width:100%;height:100%;object-fit:contain;display:block}
-.s-evento.sem-cartaz .evento{grid-template-columns:1fr}
-.s-evento.sem-cartaz .cartaz{display:none}
 
+.cartaz img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+/* Texto HTML dos eventos não é mais exibido.
+   Todas as informações ficam dentro do cartaz. */
 .evt-texto{
-  display:flex;flex-direction:column;justify-content:center;
-  gap:calc(var(--u) * 2);min-width:0;padding-right:calc(var(--u) * 2);
+  display:none;
 }
-.evt-texto .contagem{
-  font-size:calc(var(--u) * 1.7);font-weight:600;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--tinta-fraca);
-}
-.evt-texto .quando{
-  font-size:calc(var(--u) * 3.2);font-weight:700;
-  color:var(--latao);letter-spacing:.06em;text-transform:uppercase;line-height:1.2;
-}
-.evt-texto h2{
-  font-family:var(--serif);font-weight:400;
-  font-size:calc(var(--u) * 8);line-height:1.02;color:var(--tinta);
-  overflow-wrap:anywhere;
-}
-.evt-texto .onde{font-size:calc(var(--u) * 3.2);color:var(--tinta-fraca);line-height:1.3}
 
-/* entrada escalonada do conteúdo quando a tela chega */
-.slide .entra{opacity:0;transform:translateY(calc(var(--u) * 2))}
-.slide.ativo .entra{animation:sobe .7s cubic-bezier(.22,.7,.3,1) both}
-.slide.ativo .entra:nth-child(2){animation-delay:.12s}
-.slide.ativo .entra:nth-child(3){animation-delay:.24s}
-.slide.ativo .entra:nth-child(4){animation-delay:.36s}
-@keyframes sobe{to{opacity:1;transform:none}}
+.s-evento.sem-cartaz .evento{
+  display:flex;
+}
+
+.s-evento.sem-cartaz .cartaz{
+  display:flex;
+}
 
 /* ---------- Rodapé ---------- */
 .rodape{
@@ -360,15 +364,8 @@ body[data-tipo="relogio"] .data{opacity:0}
 <template id="modeloEvento">
   <section class="slide s-evento dinamico" data-tipo="evento">
     <div class="evento">
-      <div class="cartaz"><img alt="" draggable="false"></div>
-      <div class="evt-texto">
-        <div class="rotulo entra">Acontece na cidade</div>
-        <div class="entra" style="display:flex;flex-direction:column;gap:calc(var(--u) * 1.4)">
-          <div class="quando" data-campo="quando">—</div>
-          <h2 data-campo="titulo">—</h2>
-        </div>
-        <div class="onde entra" data-campo="onde"></div>
-        <div class="contagem entra" data-campo="contagem"></div>
+      <div class="cartaz">
+        <img alt="" draggable="false">
       </div>
     </div>
   </section>
@@ -409,7 +406,7 @@ const CONFIG = {
   ],
 
   agendaURL: null,      // ex.: "https://hotelcampopalace.com.br/agenda.json"
-  maxEventos: 6,
+  maxEventos: 12,
 
   // Segundos que cada tipo de tela fica no ar
   duracao: { relogio: 8, moeda: 7, clima: 9, evento: 12 },
@@ -426,10 +423,28 @@ const CONFIG = {
 const AGENDA_RESERVA = [
 
 
-    { titulo:"Show Carol Biazin",
-      inicio:"2026-10-11T21:00:00-03:00", fim:"2026-10-11T22:00:00-03:00",
-      local:"Praça São José — Campo Mourão · PR",
-      imagem:"https://hotelcampopalace.com.br/wp-content/uploads/2026/10/WhatsApp-Image-2026-03-24-at-09.10.26-2.jpeg" },
+    { inicio:"2026-11-28T18:00:00-03:00", fim:"2026-11-28T18:00:00-03:00",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/cayenna.jpeg" },
+
+    { inicio:"2026-11-05T08:00:00-03:00", fim:"2026-11-08T08:00:00-03:00",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/ballet.jpeg" },
+      
+    { inicio:"2026-11-11T08:00:00-03:00", fim:"2026-11-15T08:00:00-03:00",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/flicam.jpeg" },
+
+    { inicio:"2026-10-31T08:00:00-03:00", fim:"2026-10-31T08:00:00-03:00",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/joia.jpeg" },
+
+    { inicio:"2026-10-26T08:00:00-03:00", fim:"2026-10-31T22:00:00-03:00",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/livrosdossonhos.jpeg" },
+
+    { inicio:"2026-11-12T08:00:00-03:00", fim:"",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/mostradeartes.jpeg" },
+      
+    { titulo:"Feira de Profissões",
+      inicio:"2026-09-25T08:00:00-03:00", fim:"2026-09-25T22:00:00-03:00",
+      local:"Integrado — Campo Mourão · PR",
+      imagem:"https://ideiacomunicacao.com.br/wp-content/uploads/2026/10/sd2026.jpeg" },
 
     { titulo:"Cinemaxs",
       quando:"Confira horários e ingressos",
@@ -675,24 +690,19 @@ function quandoTexto(e){
 }
 
 function criarSlidesEventos(){
-  const palco = $("palco"), total = estado.agenda.length;
-  return estado.agenda.map((e, i) => {
+  const palco = $("palco");
+
+  return estado.agenda.map(e => {
     const el = $("modeloEvento").content.firstElementChild.cloneNode(true);
-    const campo = n => el.querySelector(`[data-campo="${n}"]`);
     const img = el.querySelector("img");
 
     if(e.imagem){
-      img.onerror = () => el.classList.add("sem-cartaz");   // sem cartaz, o texto ocupa a tela
+      img.onerror = () => el.classList.add("sem-cartaz");
       img.src = e.imagem;
-      img.alt = e.titulo;
+      img.alt = e.titulo || "Evento";
     } else {
       el.classList.add("sem-cartaz");
     }
-
-    campo("quando").textContent   = e.quando || quandoTexto(e);
-    campo("titulo").textContent   = e.titulo;
-    campo("onde").textContent     = e.local || "";
-    campo("contagem").textContent = total > 1 ? `Evento ${i + 1} de ${total}` : "";
 
     palco.appendChild(el);
     return el;
